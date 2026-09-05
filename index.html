@@ -1307,6 +1307,167 @@
         flex: 1;
       }
 
+      /* ===== HAMBURGER MENU (replaces scattered header buttons) ===== */
+      .hamburger-wrap {
+        position: relative;
+      }
+
+      .hamburger-btn {
+        width: 43px;
+        height: 43px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: var(--card);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        box-shadow: var(--shadow-sm);
+        transition: 0.18s ease;
+      }
+
+      .hamburger-btn:hover {
+        border-color: var(--primary);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+
+      .hamburger-btn span {
+        width: 19px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--text);
+        transition: 0.2s ease;
+      }
+
+      .main-menu {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        width: 220px;
+        padding: 10px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: var(--shadow-lg);
+        display: none;
+        z-index: 1000;
+      }
+
+      .main-menu.active {
+        display: block;
+      }
+
+      .menu-item {
+        width: 100%;
+        border: none;
+        background: transparent;
+        color: var(--text);
+        padding: 11px 10px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: right;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.15s ease;
+        text-decoration: none;
+      }
+
+      .menu-item:hover {
+        background: var(--secondary-bg);
+        color: var(--text-strong);
+      }
+
+      .menu-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 8px 2px;
+      }
+
+      .menu-section-label {
+        font-size: 10px;
+        color: var(--muted);
+        padding: 2px 10px 6px;
+      }
+
+      .menu-theme-row {
+        display: flex;
+        gap: 6px;
+        padding: 0 2px;
+      }
+
+      .menu-theme-row button {
+        flex: 1;
+        height: 40px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--card-2);
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.15s ease;
+      }
+
+      .menu-theme-row button:hover {
+        border-color: var(--primary);
+        transform: translateY(-1px);
+      }
+
+      /* ===== FLOATING BOTTOM NAV (mobile/tablet) ===== */
+      .bottom-nav {
+        display: none;
+        position: fixed;
+        left: 50%;
+        bottom: 16px;
+        transform: translateX(-50%);
+        z-index: 900;
+        gap: 4px;
+        padding: 6px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: var(--shadow-lg);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+
+      .bottom-nav-btn {
+        flex-direction: column;
+        gap: 3px;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        border-radius: 16px;
+        padding: 8px 18px;
+        min-width: 76px;
+      }
+
+      .bottom-nav-btn.active {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 6px 16px
+          color-mix(in srgb, var(--primary) 30%, transparent);
+      }
+
+      .bn-icon {
+        font-size: 17px;
+        line-height: 1;
+      }
+
+      .bn-label {
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      @media (max-width: 900px) {
+        .bottom-nav {
+          display: flex;
+        }
+      }
+
       .attempt-selector {
         margin: 15px 0 20px;
         text-align: center;
@@ -2022,6 +2183,29 @@
           font-size: 21px;
         }
       }
+
+      /* ===== نمایش نهایی نوار پایین در موبایل/تبلت (این بلوک عمداً آخرین قانون است) ===== */
+      .bottom-nav-btn {
+        min-width: 58px;
+        padding: 10px 16px;
+      }
+      .bn-icon {
+        font-size: 22px;
+      }
+      .bn-label {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        .home-tabs {
+          display: none !important;
+        }
+        .bottom-nav {
+          display: flex !important;
+        }
+        main {
+          padding-bottom: 96px;
+        }
+      }
     </style>
 
     <!-- ============ Firebase (احراز هویت + دیتابیس ابری) ============ -->
@@ -2160,49 +2344,66 @@
         <div class="container header-inner">
           <div class="logo">
             <div class="logo-icon">
-              <img src="icon.jpg" alt="logo" />
+              <img id="logoIcon" src="icon.jpg" alt="logo" />
             </div>
 
             <div>
               <h1>مدیریت آزمون‌ها</h1>
-              <span>ثبت، انجام و سنجش آزمون</span>
+              <span id="headerSubtitle">ثبت، انجام و سنجش آزمون</span>
             </div>
           </div>
 
           <div class="new-exam-thme">
-            <button class="btn btn-primary" onclick="openNewExamModal()">
-              + 📑
-            </button>
-            <button class="btn btn-secondary" onclick="openSubjectModal()">
-              + 📗
-            </button>
-
-            <a href="timer.html" class="btn-timer-show"> ⏰ </a>
-
-            <div class="theme-selector">
+            <div class="hamburger-wrap">
               <button
-                class="theme-button"
-                onclick="toggleThemeMenu()"
-                title="تغییر تم"
+                class="hamburger-btn"
+                onclick="toggleMainMenu()"
+                title="منو"
+                aria-label="منو"
               >
-                🎨
+                <span></span><span></span><span></span>
               </button>
 
-              <div id="themeMenu" class="theme-menu">
-                <button onclick="setTheme('light')">
-                  ☀️
-                  <span>روشن</span>
+              <div id="mainMenu" class="main-menu">
+                <button
+                  class="menu-item"
+                  onclick="openNewExamModal(); closeMainMenu();"
+                >
+                  📑 <span>آزمون جدید</span>
                 </button>
+                <button
+                  class="menu-item"
+                  onclick="openSubjectModal(); closeMainMenu();"
+                >
+                  📗 <span>درس جدید</span>
+                </button>
+                <a href="timer.html" class="menu-item">
+                  ⏰ <span>تایمر</span>
+                </a>
 
-                <button onclick="setTheme('dark')">
-                  🌙
-                  <span>دارک</span>
-                </button>
+                <div class="menu-divider"></div>
 
-                <button onclick="setTheme('focus')">
-                  🌿
-                  <span>Focus</span>
-                </button>
+                <div class="menu-section-label">تم</div>
+                <div class="menu-theme-row">
+                  <button
+                    onclick="setTheme('light'); closeMainMenu();"
+                    title="روشن"
+                  >
+                    ☀️
+                  </button>
+                  <button
+                    onclick="setTheme('dark'); closeMainMenu();"
+                    title="دارک"
+                  >
+                    🌙
+                  </button>
+                  <button
+                    onclick="setTheme('focus'); closeMainMenu();"
+                    title="Focus"
+                  >
+                    🌿
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -2234,6 +2435,34 @@
               🧠 بانک سؤال
             </button>
           </div>
+
+          <nav id="bottomNav" class="bottom-nav">
+            <button
+              class="home-tab bottom-nav-btn active"
+              data-home-tab="dashboard"
+              onclick="switchHomeTab('dashboard')"
+            >
+              <span class="bn-icon">📊</span>
+              <span class="bn-label">داشبورد</span>
+            </button>
+            <button
+              class="home-tab bottom-nav-btn"
+              data-home-tab="exams"
+              onclick="switchHomeTab('exams')"
+            >
+              <span class="bn-icon">📝</span>
+              <span class="bn-label">آزمون‌ها</span>
+            </button>
+            <button
+              class="home-tab bottom-nav-btn"
+              data-home-tab="bank"
+              onclick="switchHomeTab('bank')"
+            >
+              <span class="bn-icon">🧠</span>
+              <span class="bn-label">بانک سؤال</span>
+            </button>
+          </nav>
+
 
           <section id="dashboardSection" class="home-section active">
             <div class="dashboard-grid">
@@ -5406,19 +5635,32 @@
 
       function setTheme(theme) {
         applyTheme(theme);
-
-        closeThemeMenu();
       }
 
       function toggleThemeMenu() {
-        document.getElementById("themeMenu").classList.toggle("active");
+        document.getElementById("themeMenu")?.classList.toggle("active");
       }
 
       function closeThemeMenu() {
-        document.getElementById("themeMenu").classList.remove("active");
+        document.getElementById("themeMenu")?.classList.remove("active");
+      }
+
+      /* ===== منوی همبرگری هدر ===== */
+      function toggleMainMenu() {
+        document.getElementById("mainMenu")?.classList.toggle("active");
+      }
+
+      function closeMainMenu() {
+        document.getElementById("mainMenu")?.classList.remove("active");
       }
 
       document.addEventListener("click", function (event) {
+        const hamburgerWrap = document.querySelector(".hamburger-wrap");
+
+        if (hamburgerWrap && !hamburgerWrap.contains(event.target)) {
+          closeMainMenu();
+        }
+
         const selector = document.querySelector(".theme-selector");
 
         if (!selector) return;
@@ -6529,6 +6771,29 @@
         pushToCloud();
       };
 
+      /* ---- نمایش نام و عکس پروفایل کاربر در هدر ---- */
+      const DEFAULT_LOGO_SRC = "icon.jpg";
+      const DEFAULT_HEADER_SUBTITLE = "ثبت، انجام و سنجش آزمون";
+
+      function applyHeaderProfile(user) {
+        const subtitleEl = document.getElementById("headerSubtitle");
+        if (subtitleEl) {
+          subtitleEl.textContent =
+            user.displayName || user.email || DEFAULT_HEADER_SUBTITLE;
+        }
+        const logoImg = document.getElementById("logoIcon");
+        if (logoImg) {
+          logoImg.src = user.photoURL || DEFAULT_LOGO_SRC;
+        }
+      }
+
+      function resetHeaderProfile() {
+        const subtitleEl = document.getElementById("headerSubtitle");
+        if (subtitleEl) subtitleEl.textContent = DEFAULT_HEADER_SUBTITLE;
+        const logoImg = document.getElementById("logoIcon");
+        if (logoImg) logoImg.src = DEFAULT_LOGO_SRC;
+      }
+
       /* ---- وضعیت ورود کاربر ---- */
       fbAuth.onAuthStateChanged(async (user) => {
         if (!user) {
@@ -6537,11 +6802,13 @@
           authOverlay.style.display = "flex";
           const bar = document.getElementById("cloudUserBar");
           if (bar) bar.remove();
+          resetHeaderProfile();
           return;
         }
 
         cloudDocRef = fbDb.collection("examManagerUsers").doc(user.uid);
         createCloudUserBar(user.email || "");
+        applyHeaderProfile(user);
 
         if (!sessionStorage.getItem("cloudSyncedOnce")) {
           authLoadingBox.style.display = "block";
