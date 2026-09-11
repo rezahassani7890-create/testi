@@ -528,6 +528,123 @@
         border-top: 1px solid var(--border);
       }
 
+      /* ===== انتخاب چندتایی آزمون‌ها برای دانلود گروهی ===== */
+      .exam-card.selectable {
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .exam-card.selectable:hover {
+        border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+      }
+
+      .exam-card.exam-selected {
+        border-color: var(--primary);
+        background: color-mix(in srgb, var(--primary-soft) 55%, var(--card));
+        box-shadow: 0 0 0 2px
+          color-mix(in srgb, var(--primary) 35%, transparent);
+      }
+
+      .exam-select-checkbox {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        width: 24px;
+        height: 24px;
+        border-radius: 8px;
+        border: 2px solid var(--border-strong);
+        background: var(--card);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 900;
+        color: transparent;
+        transition:
+          background 0.15s ease,
+          border-color 0.15s ease,
+          color 0.15s ease;
+        z-index: 2;
+      }
+
+      .exam-card.exam-selected .exam-select-checkbox {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+      }
+
+      .exam-card.selectable .exam-top {
+        padding-left: 36px;
+      }
+
+      .exam-selection-toggle.active {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+      }
+
+      .exam-select-bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 40;
+        transform: translateY(120%);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          transform 0.25s ease,
+          opacity 0.25s ease;
+        background: var(--header-bg);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -12px 34px rgba(15, 23, 42, 0.12);
+        padding: 12px 0;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .exam-select-bar.active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .exam-select-bar-inner {
+        width: min(1120px, calc(100% - 32px));
+        margin-inline: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .exam-select-count {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--text-strong);
+        white-space: nowrap;
+      }
+
+      .exam-select-count span {
+        color: var(--primary);
+      }
+
+      .exam-select-bar-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-inline-start: auto;
+      }
+
+      .exam-select-bar-actions .btn {
+        min-height: 40px;
+        padding: 9px 14px;
+        font-size: 12.5px;
+      }
+
       .empty {
         text-align: center;
         padding: 72px 20px;
@@ -769,6 +886,8 @@
       .options {
         display: grid;
         gap: 10px;
+        padding-left: 5px;
+        padding-right: 5px;
       }
 
       .option {
@@ -824,15 +943,40 @@
         line-height: 1.8;
       }
 
-      .clear-answer-wrap {
+      .option-row {
         display: flex;
-        justify-content: center;
-        margin-top: 14px;
+        align-items: stretch;
+        gap: 8px;
       }
 
-      .clear-answer-btn {
-        font-size: 0.9rem;
-        min-height: 40px;
+      .option-row .option {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .option-clear-btn {
+        display: none;
+        flex: 0 0 44px;
+        width: 44px;
+        border: 1px solid color-mix(in srgb, var(--red) 45%, var(--border));
+        border-radius: 12px;
+        background: var(--red-soft);
+        color: var(--red);
+        font-size: 15px;
+        font-weight: 900;
+        align-items: center;
+        justify-content: center;
+        transition: 0.18s ease;
+        flex-shrink: 0;
+      }
+
+      .option-clear-btn.visible {
+        display: flex;
+      }
+
+      .option-clear-btn:hover {
+        filter: brightness(0.94);
+        transform: translateY(-1px);
       }
 
       .question-nav {
@@ -843,9 +987,124 @@
         gap: 10px;
       }
 
+      .question-nav .btn {
+        flex: 0 0 auto;
+      }
+
       .question-nav-center {
         color: var(--muted);
         font-size: 12px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* ===== Question number strip (scrollable dots) ===== */
+      .question-number-scroll {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-content: safe center;
+        gap: 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        scroll-snap-type: x proximity;
+        padding: 6px 4px;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        mask-image: linear-gradient(
+          to left,
+          transparent 0,
+          black 18px,
+          black calc(100% - 18px),
+          transparent 100%
+        );
+        -webkit-mask-image: linear-gradient(
+          to left,
+          transparent 0,
+          black 18px,
+          black calc(100% - 18px),
+          transparent 100%
+        );
+      }
+
+      .question-number-scroll::-webkit-scrollbar {
+        display: none;
+      }
+
+      .question-number-dot {
+        flex: 0 0 auto;
+        scroll-snap-align: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--card-2);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform 0.15s ease,
+          background 0.15s ease,
+          border-color 0.15s ease,
+          color 0.15s ease,
+          box-shadow 0.15s ease;
+        position: relative;
+      }
+
+      .question-number-dot:hover {
+        border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+        transform: translateY(-1px);
+      }
+
+      .question-number-dot.answered {
+        background: var(--green-soft);
+        border-color: color-mix(in srgb, var(--green) 45%, var(--border));
+        color: var(--green);
+      }
+
+      .question-number-dot.doubt::after {
+        content: "";
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--orange);
+        box-shadow: 0 0 0 2px var(--card);
+      }
+
+      .question-number-dot.current {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+        box-shadow: 0 6px 16px rgba(91, 92, 226, 0.28);
+        transform: translateY(-1px) scale(1.05);
+      }
+
+      /* ===== Sliding question carousel (all questions in one track) ===== */
+      .question-track-viewport {
+        overflow: hidden;
+        position: relative;
+        touch-action: pan-y;
+      }
+
+      .question-track {
+        display: flex;
+        will-change: transform;
+        gap: 5px;
+      }
+
+      .question-slide {
+        flex: 0 0 auto;
+        box-sizing: border-box;
+        min-width: 0;
+        flex-shrink: 1;
       }
 
       /* ===== RESULT ===== */
@@ -1307,215 +1566,6 @@
         flex: 1;
       }
 
-      /* ===== HAMBURGER MENU (replaces scattered header buttons) ===== */
-      .hamburger-wrap {
-        position: relative;
-      }
-
-      .hamburger-btn {
-        width: 43px;
-        height: 43px;
-        border: 1px solid var(--border);
-        border-radius: 11px;
-        background: var(--card);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        box-shadow: var(--shadow-sm);
-        transition: 0.18s ease;
-      }
-
-      .hamburger-btn:hover {
-        border-color: var(--primary);
-        transform: translateY(-1px);
-        box-shadow: var(--shadow);
-      }
-
-      .hamburger-btn span {
-        width: 19px;
-        height: 2px;
-        border-radius: 2px;
-        background: var(--text);
-        transition: 0.2s ease;
-      }
-
-      .main-menu {
-        position: absolute;
-        top: calc(100% + 10px);
-        left: 0;
-        width: 220px;
-        padding: 10px;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        box-shadow: var(--shadow-lg);
-        display: none;
-        z-index: 1000;
-      }
-
-      .main-menu.active {
-        display: block;
-      }
-
-      .menu-item {
-        width: 100%;
-        border: none;
-        background: transparent;
-        color: var(--text);
-        padding: 11px 10px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-align: right;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.15s ease;
-        text-decoration: none;
-      }
-
-      .menu-item:hover {
-        background: var(--secondary-bg);
-        color: var(--text-strong);
-      }
-
-      .menu-divider {
-        height: 1px;
-        background: var(--border);
-        margin: 8px 2px;
-      }
-
-      .menu-user-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 6px 8px 12px;
-        margin-bottom: 6px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .menu-user-photo {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        object-fit: cover;
-        flex: 0 0 38px;
-        background: var(--secondary-bg);
-      }
-
-      .menu-user-texts {
-        min-width: 0;
-      }
-
-      .menu-user-name {
-        font-size: 13px;
-        font-weight: 800;
-        color: var(--text-strong);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .menu-user-email {
-        font-size: 11px;
-        color: var(--muted);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .menu-item-danger {
-        color: var(--red);
-      }
-
-      .menu-item-danger:hover {
-        background: var(--red-soft);
-        color: var(--red);
-      }
-
-      .menu-section-label {
-        font-size: 10px;
-        color: var(--muted);
-        padding: 2px 10px 6px;
-      }
-
-      .menu-theme-row {
-        display: flex;
-        gap: 6px;
-        padding: 0 2px;
-      }
-
-      .menu-theme-row button {
-        flex: 1;
-        height: 40px;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        background: var(--card-2);
-        font-size: 16px;
-        cursor: pointer;
-        transition: 0.15s ease;
-      }
-
-      .menu-theme-row button:hover {
-        border-color: var(--primary);
-        transform: translateY(-1px);
-      }
-
-      /* ===== FLOATING BOTTOM NAV (mobile/tablet) ===== */
-      .bottom-nav {
-        display: none;
-        position: fixed;
-        left: 50%;
-        bottom: 16px;
-        transform: translateX(-50%);
-        z-index: 900;
-        gap: 4px;
-        padding: 6px;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 22px;
-        box-shadow: var(--shadow-lg);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-      }
-
-      .bottom-nav-btn {
-        flex-direction: column;
-        gap: 3px;
-        border: 0;
-        background: transparent;
-        color: var(--muted);
-        border-radius: 16px;
-        padding: 8px 18px;
-        min-width: 76px;
-      }
-
-      .bottom-nav-btn.active {
-        background: var(--primary);
-        color: #fff;
-        box-shadow: 0 6px 16px
-          color-mix(in srgb, var(--primary) 30%, transparent);
-      }
-
-      .bn-icon {
-        font-size: 17px;
-        line-height: 1;
-      }
-
-      .bn-label {
-        font-size: 10px;
-        font-weight: 700;
-      }
-
-      @media (max-width: 900px) {
-        .bottom-nav {
-          display: flex;
-        }
-      }
-
       .attempt-selector {
         margin: 15px 0 20px;
         text-align: center;
@@ -1768,11 +1818,33 @@
           flex-basis: 44px;
         }
         .question-nav {
-          flex-wrap: wrap;
+          flex-wrap: nowrap;
         }
         .question-nav .btn {
-          flex: 1;
-          min-width: 120px;
+          flex: 0 0 auto;
+          min-width: 0;
+          padding: 10px 12px;
+          font-size: 12px;
+        }
+        .question-number-dot {
+          width: 30px;
+          height: 30px;
+          font-size: 11px;
+        }
+        .exam-select-bar-inner {
+          justify-content: center;
+        }
+        .exam-select-count {
+          width: 100%;
+          text-align: center;
+        }
+        .exam-select-bar-actions {
+          width: 100%;
+          justify-content: center;
+          margin-inline-start: 0;
+        }
+        .exam-select-bar-actions .btn {
+          flex: 1 1 auto;
         }
         .result-card {
           padding: 22px 16px;
@@ -2231,46 +2303,21 @@
           font-size: 21px;
         }
       }
-
-      /* ===== نمایش نهایی نوار پایین در موبایل/تبلت (این بلوک عمداً آخرین قانون است) ===== */
-      .bottom-nav-btn {
-        min-width: 58px;
-        padding: 10px 16px;
-      }
-      .bn-icon {
-        font-size: 22px;
-      }
-      .bn-label {
-        display: none;
-      }
-      @media (max-width: 900px) {
-        .home-tabs {
-          display: none !important;
-        }
-        .bottom-nav {
-          display: flex !important;
-        }
-        main {
-          padding-bottom: 96px;
-        }
-      }
-    </style>
-
-    <!-- ============ Firebase (احراز هویت + دیتابیس ابری) ============ -->
-    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
-
-    <style>
+      /* =====================================================
+        AUTH: ورود با گوگل / مهمان
+      ===================================================== */
       .auth-overlay {
         position: fixed;
         inset: 0;
-        z-index: 99999;
-        display: flex;
+        z-index: 999;
+        background: var(--bg);
+        display: none;
         align-items: center;
         justify-content: center;
-        background: var(--bg);
-        padding: 20px;
+        padding: 24px;
+      }
+      .auth-overlay.active {
+        display: flex;
       }
       .auth-box {
         width: min(380px, 100%);
@@ -2279,60 +2326,69 @@
         border-radius: var(--radius);
         box-shadow: var(--shadow-lg);
         padding: 28px 24px;
+        text-align: center;
+      }
+      .auth-box .auth-logo {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        margin: 0 auto 14px;
+        display: block;
+        object-fit: cover;
       }
       .auth-box h2 {
-        font-size: 18px;
+        font-size: 19px;
         color: var(--text-strong);
         margin-bottom: 6px;
       }
       .auth-sub {
-        color: var(--muted);
         font-size: 13px;
-        margin-bottom: 18px;
+        color: var(--muted);
+        margin-bottom: 22px;
+        line-height: 1.9;
       }
-      .auth-box input {
-        width: 100%;
-        height: 44px;
-        border: 1px solid var(--border-strong);
-        background: var(--input-bg);
-        border-radius: 11px;
-        padding: 0 14px;
-        color: var(--text);
-        font-size: 14px;
-        margin-bottom: 10px;
+      .auth-loading {
+        display: none;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 14px;
       }
       .auth-error {
         display: none;
+        font-size: 12.5px;
         color: var(--red);
         background: var(--red-soft);
         border-radius: 10px;
-        padding: 8px 12px;
-        font-size: 12px;
-        margin-bottom: 10px;
-      }
-      .auth-loading {
-        text-align: center;
-        color: var(--muted);
-        font-size: 13px;
-        margin-bottom: 10px;
+        padding: 8px 10px;
+        margin-bottom: 12px;
+        line-height: 1.8;
       }
       .auth-box .btn {
         width: 100%;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
+        min-height: 46px;
       }
-      .auth-box .btn-primary {
-        background: var(--primary);
-        color: #fff;
+      .auth-google-btn {
+        background: var(--card);
+        border: 1px solid var(--border-strong);
+        color: var(--text-strong);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-weight: 700;
       }
-      .auth-box .btn-secondary {
+      .auth-guest-btn {
         background: var(--secondary-bg);
         color: var(--secondary-text);
+        border: 1px solid transparent;
+        font-weight: 700;
       }
       .auth-divider {
         display: flex;
         align-items: center;
         gap: 10px;
-        margin: 6px 0 12px;
+        margin: 4px 0 14px;
         color: var(--muted);
         font-size: 12px;
       }
@@ -2343,42 +2399,175 @@
         height: 1px;
         background: var(--border);
       }
-      .auth-google-btn {
-        background: var(--card);
-        border: 1px solid var(--border-strong);
+
+      /* ---- نشان حساب کاربری در هدر ---- */
+      .account-chip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--card-2);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 5px 6px 5px 12px;
+        cursor: pointer;
+        font-size: 12.5px;
+        font-weight: 700;
         color: var(--text-strong);
+        white-space: nowrap;
+      }
+      .account-chip img {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex: none;
+      }
+      .account-chip-avatar-fallback {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        font-size: 13px;
+        flex: none;
+      }
+
+      /* ---- منوی حساب کاربری ---- */
+      .account-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        min-width: 200px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: var(--shadow-lg);
+        padding: 8px;
+        display: none;
+        z-index: 60;
+      }
+      .account-menu.active {
+        display: block;
+      }
+      .account-menu-info {
+        padding: 8px 10px 10px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 6px;
+      }
+      .account-menu-name {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--text-strong);
+      }
+      .account-menu-email {
+        font-size: 11.5px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .account-menu button {
+        width: 100%;
+        text-align: right;
+        background: none;
+        border: none;
+        padding: 9px 10px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-strong);
+        cursor: pointer;
+      }
+      .account-menu button:hover {
+        background: var(--option-hover);
+      }
+      .account-menu button.danger {
+        color: var(--red);
+      }
+      .account-selector {
+        position: relative;
+      }
+
+      /* ---- مودال انتقال داده هنگام ورود با گوگل ---- */
+      .migrate-modal .modal-box {
+        max-width: 420px;
+        text-align: center;
+        padding: 26px 22px;
+      }
+      .migrate-modal p {
+        font-size: 13.5px;
+        color: var(--muted);
+        line-height: 2;
+        margin: 10px 0 20px;
+      }
+      .migrate-modal .btn {
+        width: 100%;
+        margin-bottom: 10px;
+        min-height: 46px;
       }
     </style>
+
+    <!-- ===== Firebase (Auth + Firestore) برای ورود با گوگل / مهمان ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
   </head>
 
   <body>
-    <!-- ============ صفحه ورود / ثبت‌نام ============ -->
-    <div id="authOverlay" class="auth-overlay">
+    <!-- ============ صفحه ورود ============ -->
+    <div id="authOverlay" class="auth-overlay active">
       <div class="auth-box">
+        <img src="icon.jpg" alt="logo" class="auth-logo" />
         <h2>ورود به مدیریت آزمون‌ها</h2>
         <p class="auth-sub">
-          هر کاربر فقط اطلاعات خودش را می‌بیند. برای ادامه وارد شو یا حساب
-          جدید بساز.
+          با گوگل وارد شو تا اطلاعاتت روی همه‌ی دستگاه‌هات باشه، یا بدون
+          ساختن حساب، به‌عنوان مهمان ادامه بده (اطلاعات فقط روی همین گوشی
+          ذخیره می‌مونه).
         </p>
         <div id="authLoading" class="auth-loading">در حال بررسی ورود...</div>
-        <input id="authEmail" type="email" placeholder="ایمیل" autocomplete="username" />
-        <input id="authPassword" type="password" placeholder="رمز عبور" autocomplete="current-password" />
         <div id="authError" class="auth-error"></div>
-        <button type="button" id="authLoginBtn" class="btn btn-primary">ورود</button>
-        <button type="button" id="authRegisterBtn" class="btn btn-secondary">ساخت حساب جدید</button>
-        <div class="auth-divider"><span>یا</span></div>
         <button type="button" id="authGoogleBtn" class="btn auth-google-btn">
-          <svg width="18" height="18" viewBox="0 0 48 48" style="flex:0 0 18px;">
-            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.6 19 12 24 12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6 29.6 4 24 4c-7.5 0-14 4.1-17.7 10.7z"/>
-            <path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.1-5.1l-6.5-5.5C29.6 35 26.9 36 24 36c-5.3 0-9.7-3.4-11.3-8.1l-6.6 5.1C9.9 39.8 16.4 44 24 44z"/>
-            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.7l6.5 5.5C41.4 36 44 30.5 44 24c0-1.2-.1-2.4-.4-3.5z"/>
+          <svg width="18" height="18" viewBox="0 0 48 48" style="flex: 0 0 18px">
+            <path
+              fill="#FFC107"
+              d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z"
+            />
+            <path
+              fill="#FF3D00"
+              d="M6.3 14.7l6.6 4.8C14.7 15.6 19 12 24 12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6 29.6 4 24 4c-7.5 0-14 4.1-17.7 10.7z"
+            />
+            <path
+              fill="#4CAF50"
+              d="M24 44c5.5 0 10.4-1.9 14.1-5.1l-6.5-5.5C29.6 35 26.9 36 24 36c-5.3 0-9.7-3.4-11.3-8.1l-6.6 5.1C9.9 39.8 16.4 44 24 44z"
+            />
+            <path
+              fill="#1976D2"
+              d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.7l6.5 5.5C41.4 36 44 30.5 44 24c0-1.2-.1-2.4-.4-3.5z"
+            />
           </svg>
           ورود با گوگل
+        </button>
+        <div class="auth-divider"><span>یا</span></div>
+        <button type="button" id="authGuestBtn" class="btn auth-guest-btn">
+          👤 ورود به‌عنوان مهمان
+        </button>
+      </div>
+    </div>
+
+    <!-- ============ مودال انتقال اطلاعات هنگام ورود با گوگل ============ -->
+    <div id="migrateModal" class="modal migrate-modal">
+      <div class="modal-box">
+        <h2 style="margin-bottom: 4px">اطلاعات این گوشی رو چیکار کنیم؟</h2>
+        <p>
+          هم روی این گوشی (به‌عنوان مهمان) و هم توی حساب گوگلت اطلاعات ذخیره
+          شده. کدوم رو می‌خوای نگه داری؟
+        </p>
+        <button type="button" class="btn btn-primary" id="migrateUseLocalBtn">
+          📱 اطلاعات این گوشی رو به حساب منتقل کن
+        </button>
+        <button type="button" class="btn btn-secondary" id="migrateUseCloudBtn">
+          ☁️ از اطلاعات حساب گوگل استفاده کن
         </button>
       </div>
     </div>
@@ -2392,83 +2581,92 @@
         <div class="container header-inner">
           <div class="logo">
             <div class="logo-icon">
-              <img id="logoIcon" src="icon.jpg" alt="logo" />
+              <img src="icon.jpg" alt="logo" />
             </div>
 
             <div>
               <h1>مدیریت آزمون‌ها</h1>
-              <span id="headerSubtitle">ثبت، انجام و سنجش آزمون</span>
+              <span>ثبت، انجام و سنجش آزمون</span>
             </div>
           </div>
 
           <div class="new-exam-thme">
-            <div class="hamburger-wrap">
-              <button
-                class="hamburger-btn"
-                onclick="toggleMainMenu()"
-                title="منو"
-                aria-label="منو"
-              >
-                <span></span><span></span><span></span>
-              </button>
+            <button class="btn btn-primary" onclick="openNewExamModal()">
+              + 📑
+            </button>
+            <button class="btn btn-secondary" onclick="openSubjectModal()">
+              + 📗
+            </button>
 
-              <div id="mainMenu" class="main-menu">
-                <div id="menuUserInfo" class="menu-user-info" style="display: none">
-                  <img id="menuUserPhoto" class="menu-user-photo" alt="" />
-                  <div class="menu-user-texts">
-                    <div id="menuUserName" class="menu-user-name"></div>
-                    <div id="menuUserEmail" class="menu-user-email"></div>
+            <a href="timer.html" class="btn-timer-show"> ⏰ </a>
+
+            <div class="account-selector">
+              <div id="accountChip" class="account-chip" onclick="toggleAccountMenu()">
+                <img
+                  id="accountChipAvatar"
+                  src=""
+                  alt=""
+                  style="display: none"
+                />
+                <div
+                  id="accountChipFallback"
+                  class="account-chip-avatar-fallback"
+                >
+                  👤
+                </div>
+                <span id="accountChipLabel">مهمان</span>
+              </div>
+              <div id="accountMenu" class="account-menu">
+                <div class="account-menu-info">
+                  <div id="accountMenuName" class="account-menu-name">
+                    مهمان
+                  </div>
+                  <div id="accountMenuEmail" class="account-menu-email">
+                    اطلاعات فقط روی این گوشی ذخیره می‌شود
                   </div>
                 </div>
-
                 <button
-                  class="menu-item"
-                  onclick="openNewExamModal(); closeMainMenu();"
+                  type="button"
+                  id="accountMenuGoogleBtn"
+                  onclick="requestGoogleSignIn()"
                 >
-                  📑 <span>آزمون جدید</span>
+                  🔐 ورود با گوگل
                 </button>
                 <button
-                  class="menu-item"
-                  onclick="openSubjectModal(); closeMainMenu();"
-                >
-                  📗 <span>درس جدید</span>
-                </button>
-                <a href="timer.html" class="menu-item">
-                  ⏰ <span>تایمر</span>
-                </a>
-
-                <div class="menu-divider"></div>
-
-                <div class="menu-section-label">تم</div>
-                <div class="menu-theme-row">
-                  <button
-                    onclick="setTheme('light'); closeMainMenu();"
-                    title="روشن"
-                  >
-                    ☀️
-                  </button>
-                  <button
-                    onclick="setTheme('dark'); closeMainMenu();"
-                    title="دارک"
-                  >
-                    🌙
-                  </button>
-                  <button
-                    onclick="setTheme('focus'); closeMainMenu();"
-                    title="Focus"
-                  >
-                    🌿
-                  </button>
-                </div>
-
-                <div class="menu-divider"></div>
-
-                <button
-                  id="menuLogoutBtn"
-                  class="menu-item menu-item-danger"
+                  type="button"
+                  id="accountMenuLogoutBtn"
+                  class="danger"
                   style="display: none"
+                  onclick="signOutAccount()"
                 >
-                  🚪 <span>خروج</span>
+                  🚪 خروج از حساب
+                </button>
+              </div>
+            </div>
+
+            <div class="theme-selector">
+              <button
+                class="theme-button"
+                onclick="toggleThemeMenu()"
+                title="تغییر تم"
+              >
+                🎨
+              </button>
+
+              <div id="themeMenu" class="theme-menu">
+                <button onclick="setTheme('light')">
+                  ☀️
+                  <span>روشن</span>
+                </button>
+
+                <button onclick="setTheme('dark')">
+                  🌙
+                  <span>دارک</span>
+                </button>
+
+                <button onclick="setTheme('focus')">
+                  🌿
+                  <span>Focus</span>
                 </button>
               </div>
             </div>
@@ -2501,34 +2699,6 @@
               🧠 بانک سؤال
             </button>
           </div>
-
-          <nav id="bottomNav" class="bottom-nav">
-            <button
-              class="home-tab bottom-nav-btn active"
-              data-home-tab="dashboard"
-              onclick="switchHomeTab('dashboard')"
-            >
-              <span class="bn-icon">📊</span>
-              <span class="bn-label">داشبورد</span>
-            </button>
-            <button
-              class="home-tab bottom-nav-btn"
-              data-home-tab="exams"
-              onclick="switchHomeTab('exams')"
-            >
-              <span class="bn-icon">📝</span>
-              <span class="bn-label">آزمون‌ها</span>
-            </button>
-            <button
-              class="home-tab bottom-nav-btn"
-              data-home-tab="bank"
-              onclick="switchHomeTab('bank')"
-            >
-              <span class="bn-icon">🧠</span>
-              <span class="bn-label">بانک سؤال</span>
-            </button>
-          </nav>
-
 
           <section id="dashboardSection" class="home-section active">
             <div class="dashboard-grid">
@@ -2590,6 +2760,12 @@
                   >
                     🎲 آزمون تصادفی
                   </button>
+                  <button
+                    class="btn btn-secondary"
+                    onclick="triggerImportExamFile()"
+                  >
+                    📤 آپلود آزمون
+                  </button>
                 </div>
               </div>
               <div class="panel" style="width: 100% !important">
@@ -2615,7 +2791,36 @@
           <section id="examsSection" class="home-section">
             <div class="page-title">
               <div style="width: 100%">
-                <h2>آزمون‌های من</h2>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                  "
+                >
+                  <h2>آزمون‌های من</h2>
+
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                    <button
+                      id="examSelectionToggleBtn"
+                      class="btn btn-secondary exam-selection-toggle"
+                      onclick="toggleExamSelectionMode()"
+                      title="انتخاب چند آزمون برای دانلود گروهی"
+                    >
+                      ☑️ انتخاب آزمون‌ها
+                    </button>
+
+                    <button
+                      class="btn btn-secondary"
+                      onclick="triggerImportExamFile()"
+                      title="بارگذاری فایل آزمونی که از یک دوست دریافت کرده‌اید"
+                    >
+                      📤 آپلود آزمون
+                    </button>
+                  </div>
+                </div>
 
                 <!-- =========================
                   SEARCH
@@ -2644,6 +2849,14 @@
                 <p>آزمون‌های ثبت‌شده در این دستگاه</p>
               </div>
             </div>
+
+            <input
+              type="file"
+              id="importExamFileInput"
+              accept=".json,application/json"
+              style="display: none"
+              onchange="handleImportExamFile(event)"
+            />
 
             <div id="examsList" class="exams"></div>
           </section>
@@ -2695,6 +2908,36 @@
           </section>
         </div>
       </main>
+
+      <!-- نوار پایینی انتخاب چندتایی آزمون‌ها -->
+      <div id="examSelectBar" class="exam-select-bar">
+        <div class="exam-select-bar-inner">
+          <div class="exam-select-count">
+            <span id="examSelectCount">۰</span>
+            آزمون انتخاب شده
+          </div>
+
+          <div class="exam-select-bar-actions">
+            <button
+              class="btn btn-secondary"
+              onclick="toggleSelectAllExams()"
+            >
+              <span id="examSelectAllLabel">انتخاب همه</span>
+            </button>
+
+            <button
+              class="btn btn-primary"
+              onclick="exportSelectedExams()"
+            >
+              ⬇️ دانلود آزمون‌های انتخاب‌شده
+            </button>
+
+            <button class="btn btn-secondary" onclick="toggleExamSelectionMode()">
+              انصراف
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- =========================
@@ -3007,6 +3250,39 @@
       </div>
     </div>
 
+    <div id="userAnswerEditModal" class="modal">
+      <div class="modal-box" style="width: min(430px, 100%); height: auto">
+        <div class="modal-header">
+          <h3>ویرایش پاسخ شما</h3>
+          <button class="close" onclick="closeUserAnswerEditModal()">×</button>
+        </div>
+        <div class="correct-answer-choice-wrap">
+          <label
+            class="correct-answer-choice-label"
+            id="userAnswerQuestionLabel"
+          >پاسخ شما برای سؤال</label>
+          <select id="userAnswerSelect" class="correct-answer-select">
+            <option value="0">گزینه ۱</option>
+            <option value="1">گزینه ۲</option>
+            <option value="2">گزینه ۳</option>
+            <option value="3">گزینه ۴</option>
+            <option value="">بدون پاسخ</option>
+          </select>
+          <div class="correct-answer-hint">
+            پاسخ جدید خود را از گزینه‌های ۱ تا ۴ انتخاب کنید یا «بدون پاسخ» را بزنید.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeUserAnswerEditModal()">
+            انصراف
+          </button>
+          <button class="btn btn-primary" onclick="saveUserAnswerFromResult()">
+            ذخیره پاسخ
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- =========================
         Modal خلاصه‌نویسی
     ========================= -->
@@ -3230,6 +3506,9 @@
       let currentQuestionIndex = 0;
       let currentMode = "exam";
       let editingExamId = null;
+      let examSelectionMode = false;
+      let selectedExamIds = new Set();
+      let lastVisibleExamIds = [];
 
       /* =====================================================
         HELPERS
@@ -3471,6 +3750,75 @@
       }
 
       /* =====================================================
+        COPY EXAM — ساخت نسخه خام از آزمون
+      ===================================================== */
+
+      function copyExam(id) {
+        const sourceExam = exams.find((e) => e.id === id);
+
+        if (!sourceExam) {
+          alert("آزمون موردنظر پیدا نشد.");
+          return;
+        }
+
+        const copyTitle = sourceExam.title || "آزمون";
+        const confirmed = confirm(
+          `آیا می‌خواهید یک نسخه کپی از آزمون «${copyTitle}» ساخته شود؟\n\n` +
+          `نسخه جدید اطلاعات آزمون را حفظ می‌کند، اما تمام تلاش‌ها، پاسخ‌ها، سنجش و زمان‌های قبلی را نخواهد داشت.`
+        );
+
+        if (!confirmed) return;
+
+        // کپی عمیق تا هیچ آرایه/آبجکت داخلی با آزمون اصلی مشترک نباشد.
+        let copiedExam;
+        try {
+          copiedExam =
+            typeof structuredClone === "function"
+              ? structuredClone(sourceExam)
+              : JSON.parse(JSON.stringify(sourceExam));
+        } catch (err) {
+          copiedExam = JSON.parse(JSON.stringify(sourceExam));
+        }
+
+        const now = new Date().toISOString();
+
+        // شناسه کاملاً جدید برای اینکه نسخه کپی مستقل باشد.
+        copiedExam.id =
+          `${Date.now().toString()}-${Math.random().toString(36).slice(2, 8)}`;
+
+        // اطلاعات اصلی آزمون حفظ می‌شود:
+        // title, subject, examType, module, date, questionCount,
+        // correctAnswers و سایر تنظیمات آزمون.
+        //
+        // اما نسخه کپی باید کاملاً خام باشد:
+        copiedExam.evaluated = false;
+        copiedExam.attempts = [];
+
+        // پاسخ‌های صحیح هم نباید از آزمون اصلی منتقل شوند؛
+        // چون همین آرایه در بخش «سنجش» به عنوان پاسخ صحیح نمایش داده می‌شود.
+        copiedExam.correctAnswers = Array(Number(copiedExam.questionCount) || 0).fill(null);
+
+        // یادداشت‌های مربوط به آزمون اصلی نیز مستقل باشند.
+        copiedExam.notes = "";
+        copiedExam.createdAt = now;
+
+        exams.unshift(copiedExam);
+        saveData();
+
+        refreshExamSubjectsV3();
+        refreshEditExamSubjects();
+        refreshExamSubjects();
+        refreshExamSubjectList();
+        refreshBankSubjects();
+        renderExams();
+        renderDashboardV2();
+
+        alert(
+          `آزمون «${copyTitle}» با موفقیت کپی شد.\nنسخه جدید بدون سنجش و بدون تلاش‌های قبلی ساخته شد.`
+        );
+      }
+
+      /* =====================================================
         CREATE EXAM
       ===================================================== */
 
@@ -3619,6 +3967,8 @@
 
         refreshExamSubjects();
 
+        lastVisibleExamIds = examsToRender.map((e) => e.id);
+
         if (exams.length === 0) {
           container.innerHTML = `
 
@@ -3639,6 +3989,8 @@
             </div>
 
           `;
+
+          updateExamSelectionBar();
 
           return;
         }
@@ -3663,6 +4015,8 @@
             </div>
 
           `;
+
+          updateExamSelectionBar();
 
           return;
         }
@@ -3822,6 +4176,26 @@
                   ⚙️ تنظیمات آزمون
                 </button>
 
+                <button
+                  class="btn btn-secondary"
+                  onclick="copyExam('${exam.id}')"
+                  title="ساخت یک نسخه خام از این آزمون بدون سنجش و تلاش‌ها"
+                >
+                  📋 کپی
+                </button>
+
+              `;
+
+            actions += `
+
+                <button
+                  class="btn btn-secondary"
+                  onclick="exportExamToFile('${exam.id}')"
+                  title="دانلود فایل این آزمون برای اشتراک‌گذاری"
+                >
+                  ⬇️ دانلود آزمون
+                </button>
+
               `;
 
             actions += `
@@ -3835,9 +4209,26 @@
 
               `;
 
+            const isSelected = selectedExamIds.has(exam.id);
+
+            const cardClasses = ["exam-card"];
+            if (examSelectionMode) cardClasses.push("selectable");
+            if (examSelectionMode && isSelected)
+              cardClasses.push("exam-selected");
+
+            const cardClickAttr = examSelectionMode
+              ? `onclick="toggleExamSelected('${exam.id}')"`
+              : "";
+
+            const checkboxHTML = examSelectionMode
+              ? `<div class="exam-select-checkbox">${isSelected ? "✓" : ""}</div>`
+              : "";
+
             return `
 
-                <div class="exam-card">
+                <div class="${cardClasses.join(" ")}" ${cardClickAttr}>
+
+                  ${checkboxHTML}
 
                   <div class="exam-top">
 
@@ -3904,19 +4295,346 @@
 
                   </div>
 
-                  <div class="exam-actions">
+                  ${
+                    examSelectionMode
+                      ? ""
+                      : `
 
-                    ${actions}
+                    <div class="exam-actions">
 
-                  </div>
+                      ${actions}
 
-                  ${resultHTML}
+                    </div>
+
+                    ${resultHTML}
+
+                  `
+                  }
 
                 </div>
 
               `;
           })
           .join("");
+
+        updateExamSelectionBar();
+      }
+
+      /* =====================================================
+        اشتراک‌گذاری آزمون (دانلود / آپلود فایل آزمون)
+      ===================================================== */
+
+      function downloadJSONFile(filename, dataObj) {
+        let json;
+
+        try {
+          json = JSON.stringify(dataObj, null, 2);
+        } catch (err) {
+          alert("خطا در آماده‌سازی فایل.");
+          return false;
+        }
+
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+        return true;
+      }
+
+      function safeFileName(text) {
+        return (
+          String(text || "آزمون")
+            .replace(/[\\/:*?"<>|]/g, "")
+            .trim() || "آزمون"
+        );
+      }
+
+      function exportExamToFile(id) {
+        const exam = exams.find((e) => e.id === id);
+
+        if (!exam) return;
+
+        const payload = {
+          appName: "azmoon-manager",
+          fileType: "exam-export",
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          exam: exam,
+        };
+
+        downloadJSONFile(`${safeFileName(exam.title)}.json`, payload);
+      }
+
+      function triggerImportExamFile() {
+        const input = document.getElementById("importExamFileInput");
+
+        if (!input) return;
+
+        input.value = "";
+        input.click();
+      }
+
+      /* =====================================================
+        انتخاب چندتایی آزمون‌ها (برای دانلود گروهی)
+      ===================================================== */
+
+      function toggleExamSelectionMode() {
+        examSelectionMode = !examSelectionMode;
+
+        if (!examSelectionMode) {
+          selectedExamIds.clear();
+        }
+
+        const toggleBtn = document.getElementById("examSelectionToggleBtn");
+        if (toggleBtn) {
+          toggleBtn.classList.toggle("active", examSelectionMode);
+          toggleBtn.innerHTML = examSelectionMode
+            ? "✕ لغو انتخاب"
+            : "☑️ انتخاب آزمون‌ها";
+        }
+
+        renderExams(exams.filter((e) => lastVisibleExamIds.includes(e.id)));
+      }
+
+      function toggleExamSelected(id) {
+        if (selectedExamIds.has(id)) {
+          selectedExamIds.delete(id);
+        } else {
+          selectedExamIds.add(id);
+        }
+
+        renderExams(exams.filter((e) => lastVisibleExamIds.includes(e.id)));
+      }
+
+      function toggleSelectAllExams() {
+        const visibleExams = exams.filter((e) =>
+          lastVisibleExamIds.includes(e.id),
+        );
+
+        const allSelected =
+          visibleExams.length > 0 &&
+          visibleExams.every((e) => selectedExamIds.has(e.id));
+
+        if (allSelected) {
+          visibleExams.forEach((e) => selectedExamIds.delete(e.id));
+        } else {
+          visibleExams.forEach((e) => selectedExamIds.add(e.id));
+        }
+
+        renderExams(visibleExams);
+      }
+
+      function updateExamSelectionBar() {
+        const bar = document.getElementById("examSelectBar");
+        const countEl = document.getElementById("examSelectCount");
+        const allLabel = document.getElementById("examSelectAllLabel");
+
+        if (!bar) return;
+
+        bar.classList.toggle(
+          "active",
+          examSelectionMode && selectedExamIds.size > 0,
+        );
+
+        if (countEl) {
+          countEl.textContent = toPersianNumber(selectedExamIds.size);
+        }
+
+        if (allLabel) {
+          const visibleExams = exams.filter((e) =>
+            lastVisibleExamIds.includes(e.id),
+          );
+          const allSelected =
+            visibleExams.length > 0 &&
+            visibleExams.every((e) => selectedExamIds.has(e.id));
+
+          allLabel.textContent = allSelected ? "لغو انتخاب همه" : "انتخاب همه";
+        }
+      }
+
+      function exportSelectedExams() {
+        if (selectedExamIds.size === 0) {
+          alert("حداقل یک آزمون را انتخاب کنید.");
+          return;
+        }
+
+        const selectedExams = exams.filter((e) => selectedExamIds.has(e.id));
+
+        const payload = {
+          appName: "azmoon-manager",
+          fileType: "exam-export-bulk",
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          count: selectedExams.length,
+          exams: selectedExams,
+        };
+
+        const filename =
+          selectedExams.length === 1
+            ? `${safeFileName(selectedExams[0].title)}.json`
+            : `${toPersianNumber(selectedExams.length)}-آزمون.json`;
+
+        const ok = downloadJSONFile(filename, payload);
+
+        if (ok) {
+          toggleExamSelectionMode();
+        }
+      }
+
+      /* =====================================================
+        نرمال‌سازی داده‌های وارد شده از فایل آزمون
+      ===================================================== */
+
+      function normalizeImportedExam(importedExam) {
+        if (
+          !importedExam ||
+          !Number.isFinite(Number(importedExam.questionCount)) ||
+          Number(importedExam.questionCount) < 1
+        ) {
+          return null;
+        }
+
+        const count = Number(importedExam.questionCount);
+
+        return {
+          id: `${Date.now().toString()}-${Math.random().toString(36).slice(2, 8)}`,
+          title: String(importedExam.title || "آزمون وارد شده"),
+          subject: String(importedExam.subject || "بدون درس"),
+          examType: importedExam.examType === "module" ? "module" : "lesson",
+          module:
+            importedExam.examType === "module"
+              ? String(importedExam.module || "")
+              : "",
+          date: String(importedExam.date || ""),
+          questionCount: count,
+          correctAnswers:
+            Array.isArray(importedExam.correctAnswers) &&
+            importedExam.correctAnswers.length === count
+              ? importedExam.correctAnswers.slice()
+              : Array(count).fill(null),
+          evaluated: importedExam.evaluated === true,
+          notes: String(importedExam.notes || ""),
+          createdAt: new Date().toISOString(),
+          attempts: Array.isArray(importedExam.attempts)
+            ? importedExam.attempts.map((att) => ({
+                timestamp: att.timestamp || new Date().toISOString(),
+                answers:
+                  Array.isArray(att.answers) && att.answers.length === count
+                    ? att.answers.slice()
+                    : Array(count).fill(null),
+                doubtFlags:
+                  Array.isArray(att.doubtFlags) &&
+                  att.doubtFlags.length === count
+                    ? att.doubtFlags.slice()
+                    : Array(count).fill(false),
+                completed: att.completed === true,
+                timing:
+                  att.timing && typeof att.timing === "object"
+                    ? att.timing
+                    : createTiming(count),
+              }))
+            : [],
+        };
+      }
+
+      function handleImportExamFile(event) {
+        const file = event.target.files && event.target.files[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          let parsed;
+
+          try {
+            parsed = JSON.parse(e.target.result);
+          } catch (err) {
+            alert("فایل انتخاب‌شده یک فایل آزمون معتبر (JSON) نیست.");
+            return;
+          }
+
+          let rawExamList = [];
+
+          if (
+            parsed &&
+            parsed.fileType === "exam-export-bulk" &&
+            Array.isArray(parsed.exams)
+          ) {
+            rawExamList = parsed.exams;
+          } else if (
+            parsed &&
+            parsed.fileType === "exam-export" &&
+            parsed.exam
+          ) {
+            rawExamList = [parsed.exam];
+          } else if (Array.isArray(parsed)) {
+            rawExamList = parsed;
+          } else if (parsed && parsed.questionCount) {
+            rawExamList = [parsed];
+          }
+
+          const normalizedExams = rawExamList
+            .map((raw) => normalizeImportedExam(raw))
+            .filter(Boolean);
+
+          if (normalizedExams.length === 0) {
+            alert("فایل انتخاب‌شده هیچ آزمون معتبری ندارد.");
+            return;
+          }
+
+          const confirmMsg =
+            normalizedExams.length === 1
+              ? `آزمون «${normalizedExams[0].title}» با ${toPersianNumber(normalizedExams[0].questionCount)} سؤال دریافت شد.\nاضافه شود؟`
+              : `${toPersianNumber(normalizedExams.length)} آزمون دریافت شد:\n${normalizedExams.map((e) => `• ${e.title}`).join("\n")}\n\nهمه اضافه شوند؟`;
+
+          if (!confirm(confirmMsg)) return;
+
+          const subjects = getSubjectsV3();
+          let subjectsChanged = false;
+
+          normalizedExams.forEach((ne) => {
+            if (ne.subject && !subjects.includes(ne.subject)) {
+              subjects.push(ne.subject);
+              subjectsChanged = true;
+            }
+          });
+
+          if (subjectsChanged) {
+            saveSubjectsV3(subjects);
+          }
+
+          normalizedExams.forEach((ne) => exams.unshift(ne));
+          saveData();
+
+          refreshExamSubjectsV3();
+          refreshEditExamSubjects();
+          refreshExamSubjects();
+          refreshExamSubjectList();
+          refreshBankSubjects();
+          renderExams();
+          renderDashboardV2();
+
+          alert(
+            normalizedExams.length === 1
+              ? "آزمون با موفقیت اضافه شد."
+              : `${toPersianNumber(normalizedExams.length)} آزمون با موفقیت اضافه شدند.`,
+          );
+        };
+
+        reader.onerror = function () {
+          alert("خطا در خواندن فایل آزمون.");
+        };
+
+        reader.readAsText(file, "utf-8");
       }
 
       /* =====================================================
@@ -4539,56 +5257,20 @@
           answers = Array(exam.questionCount).fill(null);
         }
 
-        const selected = answers[currentQuestionIndex];
-
         const currentAttempt =
           currentMode === "exam" && currentAttemptIndex !== -1
             ? exam.attempts[currentAttemptIndex]
             : null;
 
-        const isDoubt =
-          currentAttempt &&
-          Array.isArray(currentAttempt.doubtFlags) &&
-          currentAttempt.doubtFlags[currentQuestionIndex] === true;
+        const doubtFlags =
+          currentAttempt && Array.isArray(currentAttempt.doubtFlags)
+            ? currentAttempt.doubtFlags
+            : [];
 
         document.getElementById("runningExamTitle").textContent = exam.title;
 
         document.getElementById("runningExamMode").textContent =
           currentMode === "exam" ? "حالت آزمون" : "ثبت پاسخ‌های صحیح";
-
-        document.getElementById("progressQuestion").textContent = `سؤال ${
-          currentQuestionIndex + 1
-        } از ${exam.questionCount}`;
-
-        const percent = ((currentQuestionIndex + 1) / exam.questionCount) * 100;
-
-        document.getElementById("progressPercent").textContent =
-          `${Math.round(percent)}٪`;
-
-        document.getElementById("progressBar").style.width = `${percent}%`;
-
-        const doubtButton =
-          currentMode === "exam"
-            ? `
-
-                <button
-                  type="button"
-                  class="doubt-toggle ${isDoubt ? "active" : ""}"
-                  onclick="toggleDoubtFlag()"
-                >
-                  !
-                </button>
-
-              `
-            : `
-
-                <div
-                  class="doubt-toggle ${isDoubt ? "active" : ""} disabled"
-                >
-                  !
-                </div>
-
-              `;
 
         const questionTimerHTML =
           currentMode === "exam"
@@ -4634,121 +5316,148 @@
             `
             : "";
 
-        let html = `
+        const slidePercent = 100 / exam.questionCount;
+
+        let slidesHTML = "";
+
+        for (let qIndex = 0; qIndex < exam.questionCount; qIndex++) {
+          const selected = answers[qIndex];
+
+          const isDoubtQ = doubtFlags[qIndex] === true;
+
+          const doubtButtonHTML =
+            currentMode === "exam"
+              ? `
+
+                  <button
+                    type="button"
+                    class="doubt-toggle ${isDoubtQ ? "active" : ""}"
+                    onclick="toggleDoubtFlag(${qIndex})"
+                  >
+                    !
+                  </button>
+
+                `
+              : `
+
+                  <div class="doubt-toggle ${isDoubtQ ? "active" : ""} disabled">
+                    !
+                  </div>
+
+                `;
+
+          let optionsHTML = "";
+
+          for (let i = 0; i < 4; i++) {
+            const isSelected = selected === i;
+
+            optionsHTML += `
+
+              <div class="option-row">
+
+                <button
+                  type="button"
+                  class="option ${isSelected ? "selected" : ""}"
+                  onclick="selectOption(${qIndex}, ${i})"
+                >
+
+                  <span class="option-number">
+                    ${toPersianNumber(i + 1)}
+                  </span>
+
+                  <span class="option-text">
+                    گزینه ${toPersianNumber(i + 1)}
+                  </span>
+
+                </button>
+
+                <button
+                  type="button"
+                  class="option-clear-btn ${isSelected ? "visible" : ""}"
+                  onclick="event.stopPropagation(); clearCurrentAnswer(${qIndex})"
+                  title="پاک کردن این پاسخ"
+                >
+                  ✕
+                </button>
+
+              </div>
+
+            `;
+          }
+
+          slidesHTML += `
+
+            <div
+              class="question-slide"
+              data-index="${qIndex}"
+              style="width:${slidePercent}%"
+            >
+
+              <div class="question-number">
+                سؤال ${toPersianNumber(qIndex + 1)}
+              </div>
+
+              <div class="question-header-row">
+
+                <div class="question-text">
+                  سؤال ${toPersianNumber(qIndex + 1)}
+                </div>
+
+                ${doubtButtonHTML}
+
+              </div>
+
+              <div class="options">
+                ${optionsHTML}
+              </div>
+
+            </div>
+
+          `;
+        }
+
+        const html = `
 
           <div class="question-card">
 
             ${questionTimerHTML}
 
-            <div class="question-number">
-              سؤال ${currentQuestionIndex + 1}
-            </div>
+            <div class="question-track-viewport" id="questionViewport">
 
-            <div class="question-header-row">
-
-              <div class="question-text">
-                سؤال ${toPersianNumber(currentQuestionIndex + 1)}
+              <div
+                class="question-track"
+                id="questionTrack"
+                style="width:${exam.questionCount * 100}%"
+              >
+                ${slidesHTML}
               </div>
 
-              ${doubtButton}
-
             </div>
-
-            <div class="options">
-
-        `;
-
-        for (let i = 0; i < 4; i++) {
-          const isSelected = selected === i;
-
-          html += `
-
-            <button
-              type="button"
-              class="option ${isSelected ? "selected" : ""}"
-              onclick="selectOption(${i})"
-            >
-
-              <span class="option-number">
-                ${toPersianNumber(i + 1)}
-              </span>
-
-              <span class="option-text">
-                گزینه ${toPersianNumber(i + 1)}
-              </span>
-
-            </button>
-
-          `;
-        }
-
-        html += `
-
-            </div>
-
-            ${
-              selected !== null
-                ? `
-
-                  <div class="clear-answer-wrap">
-
-                    <button
-                      type="button"
-                      class="btn btn-secondary clear-answer-btn"
-                      onclick="clearCurrentAnswer()"
-                    >
-                      ✕ پاک کردن پاسخ
-                    </button>
-
-                  </div>
-
-                `
-                : ""
-            }
 
             <div class="question-nav">
 
               <button
                 class="btn btn-secondary"
+                id="prevQBtn"
                 onclick="previousQuestion()"
-                ${currentQuestionIndex === 0 ? "disabled" : ""}
               >
-                ← قبلی
+                → قبلی
               </button>
 
               <div class="question-nav-center">
 
-                ${currentQuestionIndex + 1}
-
-                /
-
-                ${exam.questionCount}
+                <div class="question-number-scroll" id="questionNumberScroll">
+                </div>
 
               </div>
 
-              ${
-                currentQuestionIndex === exam.questionCount - 1
-                  ? `
-
-                    <button
-                      class="btn btn-primary"
-                      onclick="finishCurrentMode()"
-                    >
-                      ${currentMode === "exam" ? "پایان آزمون" : "ثبت سنجش"}
-                    </button>
-
-                  `
-                  : `
-
-                    <button
-                      class="btn btn-secondary"
-                      onclick="nextQuestion()"
-                    >
-                      بعدی →
-                    </button>
-
-                  `
-              }
+              <button
+                class="btn btn-primary"
+                id="nextQBtn"
+                onclick="handleNextOrFinish()"
+              >
+                بعدی ←
+              </button>
 
             </div>
 
@@ -4757,47 +5466,412 @@
         `;
 
         document.getElementById("questionArea").innerHTML = html;
+
+        setTrackPosition(currentQuestionIndex, false);
+
+        renderQuestionDots();
+
+        updateNavButtons();
+
+        bindTrackDrag();
+      }
+
+      /* =====================================================
+        به‌روزرسانی نوار پیشرفت (شماره سؤال / درصد)
+      ===================================================== */
+
+      function updateProgressUI() {
+        const exam = exams.find((e) => e.id === currentExamId);
+
+        if (!exam) return;
+
+        document.getElementById("progressQuestion").textContent = `سؤال ${
+          currentQuestionIndex + 1
+        } از ${exam.questionCount}`;
+
+        const percent = ((currentQuestionIndex + 1) / exam.questionCount) * 100;
+
+        document.getElementById("progressPercent").textContent =
+          `${Math.round(percent)}٪`;
+
+        document.getElementById("progressBar").style.width = `${percent}%`;
+      }
+
+      /* =====================================================
+        دکمه‌های قبلی/بعدی — فعال/غیرفعال و متن دکمه بعدی
+      ===================================================== */
+
+      function updateNavButtons() {
+        const exam = exams.find((e) => e.id === currentExamId);
+
+        if (!exam) return;
+
+        const prevBtn = document.getElementById("prevQBtn");
+        const nextBtn = document.getElementById("nextQBtn");
+
+        if (prevBtn) {
+          prevBtn.disabled = currentQuestionIndex === 0;
+        }
+
+        if (nextBtn) {
+          const isLast = currentQuestionIndex === exam.questionCount - 1;
+
+          nextBtn.textContent = isLast
+            ? currentMode === "exam"
+              ? "پایان آزمون"
+              : "ثبت سنجش"
+            : "بعدی ←";
+        }
+      }
+
+      function handleNextOrFinish() {
+        const exam = exams.find((e) => e.id === currentExamId);
+
+        if (!exam) return;
+
+        if (currentQuestionIndex === exam.questionCount - 1) {
+          finishCurrentMode();
+        } else {
+          nextQuestion();
+        }
+      }
+
+      /* =====================================================
+        نوار مربع‌های شماره سؤال (بازسازی سبک، بدون رندر کامل)
+      ===================================================== */
+
+      function renderQuestionDots() {
+        const exam = exams.find((e) => e.id === currentExamId);
+
+        const container = document.getElementById("questionNumberScroll");
+
+        if (!exam || !container) return;
+
+        let answers;
+
+        if (currentMode === "exam") {
+          answers =
+            currentAttemptIndex !== -1
+              ? exam.attempts[currentAttemptIndex].answers
+              : [];
+        } else {
+          answers = exam.correctAnswers;
+        }
+
+        if (!Array.isArray(answers)) answers = [];
+
+        const currentAttempt =
+          currentMode === "exam" && currentAttemptIndex !== -1
+            ? exam.attempts[currentAttemptIndex]
+            : null;
+
+        const doubtFlags =
+          currentAttempt && Array.isArray(currentAttempt.doubtFlags)
+            ? currentAttempt.doubtFlags
+            : [];
+
+        let html = "";
+
+        for (let i = 0; i < exam.questionCount; i++) {
+          const dotClasses = ["question-number-dot"];
+
+          if (i === currentQuestionIndex) dotClasses.push("current");
+          if (answers[i] !== null && answers[i] !== undefined)
+            dotClasses.push("answered");
+          if (currentMode === "exam" && doubtFlags[i] === true)
+            dotClasses.push("doubt");
+
+          html += `
+
+            <button
+              type="button"
+              class="${dotClasses.join(" ")}"
+              onclick="goToQuestion(${i})"
+              title="سؤال ${toPersianNumber(i + 1)}"
+            >
+              ${toPersianNumber(i + 1)}
+            </button>
+
+          `;
+        }
+
+        container.innerHTML = html;
+
+        const activeDot = container.querySelector(".question-number-dot.current");
+
+        if (activeDot) {
+          activeDot.scrollIntoView({
+            behavior: "smooth",
+            inline: "center",
+            block: "nearest",
+          });
+        }
+      }
+
+      /* =====================================================
+        موقعیت‌دهی نوار سؤالات (اسلاید واقعی، بدون رندر مجدد)
+      ===================================================== */
+
+      function setTrackPosition(index, animate) {
+        const track = document.getElementById("questionTrack");
+        const exam = exams.find((e) => e.id === currentExamId);
+
+        if (!track || !exam || !exam.questionCount) return;
+
+        const slidePercent = 100 / exam.questionCount;
+
+        track.style.transition = animate
+          ? "transform 0.32s cubic-bezier(.22,.61,.36,1)"
+          : "none";
+
+        track.style.transform = `translateX(${index * slidePercent}%)`;
+      }
+
+      /* =====================================================
+        رفتن مستقیم به یک سؤال (کلیک روی مربع شماره سؤال)
+      ===================================================== */
+
+      function goToQuestion(index, animate = true) {
+        const exam = exams.find((e) => e.id === currentExamId);
+
+        if (!exam) return;
+        if (index < 0 || index >= exam.questionCount) return;
+        if (index === currentQuestionIndex) return;
+
+        prepareQuestionTimerForQuestionChange(index);
+
+        currentQuestionIndex = index;
+
+        setTrackPosition(index, animate);
+        renderQuestionDots();
+        updateProgressUI();
+        updateNavButtons();
+      }
+
+      function previousQuestion() {
+        if (currentQuestionIndex <= 0) return;
+
+        goToQuestion(currentQuestionIndex - 1);
+      }
+
+      function nextQuestion() {
+        const exam = exams.find((e) => e.id === currentExamId);
+
+        if (!exam) return;
+
+        if (currentQuestionIndex < exam.questionCount - 1) {
+          goToQuestion(currentQuestionIndex + 1);
+        }
+      }
+
+      /* =====================================================
+        کشیدن با انگشت/موس روی نوار سؤالات
+        (محتوا دقیقاً همراه انگشت حرکت می‌کند — مثل یک اسلاید واقعی)
+        راست → سؤال بعدی، چپ → سؤال قبلی
+      ===================================================== */
+
+      function bindTrackDrag() {
+        const viewport = document.getElementById("questionViewport");
+        const track = document.getElementById("questionTrack");
+
+        if (!viewport || !track) return;
+
+        let dragging = false;
+        let decidedAxis = null;
+        let startX = 0;
+        let startY = 0;
+        let viewportWidth = 0;
+        let baseIndex = 0;
+        let slidePercent = 0;
+        let lastDeltaPx = 0;
+        let wheelLocked = false;
+
+        const getExam = () => exams.find((e) => e.id === currentExamId);
+
+        function onStart(clientX, clientY) {
+          const exam = getExam();
+
+          if (!exam) return;
+
+          dragging = true;
+          decidedAxis = null;
+          startX = clientX;
+          startY = clientY;
+          lastDeltaPx = 0;
+          viewportWidth = viewport.clientWidth || 1;
+          baseIndex = currentQuestionIndex;
+          slidePercent = 100 / exam.questionCount;
+
+          track.style.transition = "none";
+        }
+
+        function onMove(clientX, clientY, evt) {
+          if (!dragging) return;
+
+          const dx = clientX - startX;
+          const dy = clientY - startY;
+
+          if (decidedAxis === null) {
+            if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+
+            decidedAxis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+
+            if (decidedAxis === "y") {
+              dragging = false;
+              return;
+            }
+          }
+
+          if (decidedAxis !== "x") return;
+
+          if (evt && evt.cancelable) evt.preventDefault();
+
+          lastDeltaPx = dx;
+
+          const exam = getExam();
+
+          if (!exam) return;
+
+          const deltaPercent = (dx / viewportWidth) * slidePercent;
+
+          let target = baseIndex * slidePercent + deltaPercent;
+
+          const minT = 0;
+          const maxT = (exam.questionCount - 1) * slidePercent;
+
+          if (target < minT) target = minT + (target - minT) * 0.35;
+          if (target > maxT) target = maxT + (target - maxT) * 0.35;
+
+          track.style.transform = `translateX(${target}%)`;
+        }
+
+        function onEnd() {
+          if (!dragging) return;
+
+          dragging = false;
+
+          const wasX = decidedAxis === "x";
+
+          decidedAxis = null;
+
+          const exam = getExam();
+
+          if (!exam || !wasX) {
+            setTrackPosition(currentQuestionIndex, true);
+            return;
+          }
+
+          const fraction = lastDeltaPx / viewportWidth;
+          const threshold = 0.18;
+
+          let newIndex = baseIndex;
+
+          if (fraction > threshold && baseIndex < exam.questionCount - 1) {
+            newIndex = baseIndex + 1;
+          } else if (fraction < -threshold && baseIndex > 0) {
+            newIndex = baseIndex - 1;
+          }
+
+          lastDeltaPx = 0;
+
+          if (newIndex !== currentQuestionIndex) {
+            prepareQuestionTimerForQuestionChange(newIndex);
+            currentQuestionIndex = newIndex;
+          }
+
+          setTrackPosition(currentQuestionIndex, true);
+          renderQuestionDots();
+          updateProgressUI();
+          updateNavButtons();
+        }
+
+        viewport.addEventListener(
+          "touchstart",
+          (e) => {
+            if (e.target.closest(".question-number-scroll")) return;
+
+            const t = e.touches[0];
+            onStart(t.clientX, t.clientY);
+          },
+          { passive: true },
+        );
+
+        viewport.addEventListener(
+          "touchmove",
+          (e) => {
+            const t = e.touches[0];
+            onMove(t.clientX, t.clientY, e);
+          },
+          { passive: false },
+        );
+
+        viewport.addEventListener("touchend", onEnd, { passive: true });
+        viewport.addEventListener("touchcancel", onEnd, { passive: true });
+
+        viewport.addEventListener("mousedown", (e) => {
+          if (e.target.closest(".question-number-scroll")) return;
+
+          onStart(e.clientX, e.clientY);
+
+          const moveHandler = (ev) => onMove(ev.clientX, ev.clientY, ev);
+
+          const upHandler = () => {
+            onEnd();
+            document.removeEventListener("mousemove", moveHandler);
+            document.removeEventListener("mouseup", upHandler);
+          };
+
+          document.addEventListener("mousemove", moveHandler);
+          document.addEventListener("mouseup", upHandler);
+        });
+
+        viewport.addEventListener(
+          "wheel",
+          (e) => {
+            if (e.target.closest(".question-number-scroll")) return;
+            if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
+            if (Math.abs(e.deltaX) < 24) return;
+
+            e.preventDefault();
+
+            if (wheelLocked) return;
+            wheelLocked = true;
+
+            if (e.deltaX > 0) {
+              nextQuestion();
+            } else {
+              previousQuestion();
+            }
+
+            setTimeout(() => {
+              wheelLocked = false;
+            }, 380);
+          },
+          { passive: false },
+        );
       }
 
       /* =====================================================
         SELECT OPTION
       ===================================================== */
 
-      function selectOption(optionIndex) {
-        const exam = exams.find((e) => e.id === currentExamId);
+      function updateSlideAnswerUI(qIndex, optionIndex) {
+        const slide = document.querySelector(
+          `.question-slide[data-index="${qIndex}"]`,
+        );
 
-        if (!exam) return;
+        if (!slide) return;
 
-        let answers;
+        slide.querySelectorAll(".option").forEach((btn, i) => {
+          btn.classList.toggle("selected", i === optionIndex);
+        });
 
-        if (currentMode === "exam") {
-          if (currentAttemptIndex === -1) return;
-
-          answers = exam.attempts[currentAttemptIndex].answers;
-        } else {
-          answers = exam.correctAnswers;
-        }
-
-        answers[currentQuestionIndex] = optionIndex;
-
-        saveData();
-
-        if (currentQuestionIndex < exam.questionCount - 1) {
-          setTimeout(() => {
-            const nextIndex = currentQuestionIndex + 1;
-
-            prepareQuestionTimerForQuestionChange(nextIndex);
-
-            currentQuestionIndex = nextIndex;
-
-            renderQuestion();
-          }, 120);
-        } else {
-          renderQuestion();
-        }
+        slide.querySelectorAll(".option-clear-btn").forEach((btn, i) => {
+          btn.classList.toggle("visible", i === optionIndex);
+        });
       }
 
-      function clearCurrentAnswer() {
+      function selectOption(qIndex, optionIndex) {
         const exam = exams.find((e) => e.id === currentExamId);
 
         if (!exam) return;
@@ -4809,49 +5883,53 @@
 
           if (!attempt) return;
 
-          attempt.answers[currentQuestionIndex] = null;
+          attempt.answers[qIndex] = optionIndex;
+        } else {
+          if (!Array.isArray(exam.correctAnswers)) return;
+
+          exam.correctAnswers[qIndex] = optionIndex;
+        }
+
+        saveData();
+
+        updateSlideAnswerUI(qIndex, optionIndex);
+        renderQuestionDots();
+
+        if (qIndex === currentQuestionIndex && qIndex < exam.questionCount - 1) {
+          setTimeout(() => {
+            goToQuestion(qIndex + 1);
+          }, 120);
+        }
+      }
+
+      function clearCurrentAnswer(qIndex) {
+        const exam = exams.find((e) => e.id === currentExamId);
+
+        if (!exam) return;
+
+        if (currentMode === "exam") {
+          if (currentAttemptIndex === -1) return;
+
+          const attempt = exam.attempts[currentAttemptIndex];
+
+          if (!attempt) return;
+
+          attempt.answers[qIndex] = null;
         } else if (currentMode === "evaluation") {
           if (!Array.isArray(exam.correctAnswers)) return;
 
-          exam.correctAnswers[currentQuestionIndex] = null;
+          exam.correctAnswers[qIndex] = null;
         } else {
           return;
         }
 
         saveData();
 
-        renderQuestion();
+        updateSlideAnswerUI(qIndex, null);
+        renderQuestionDots();
       }
 
-      function previousQuestion() {
-        if (currentQuestionIndex <= 0) return;
-
-        const nextIndex = currentQuestionIndex - 1;
-
-        prepareQuestionTimerForQuestionChange(nextIndex);
-
-        currentQuestionIndex = nextIndex;
-
-        renderQuestion();
-      }
-
-      function nextQuestion() {
-        const exam = exams.find((e) => e.id === currentExamId);
-
-        if (!exam) return;
-
-        if (currentQuestionIndex < exam.questionCount - 1) {
-          const nextIndex = currentQuestionIndex + 1;
-
-          prepareQuestionTimerForQuestionChange(nextIndex);
-
-          currentQuestionIndex = nextIndex;
-
-          renderQuestion();
-        }
-      }
-
-      function toggleDoubtFlag() {
+      function toggleDoubtFlag(qIndex) {
         const exam = exams.find((e) => e.id === currentExamId);
 
         if (!exam || currentMode !== "exam") return;
@@ -4866,13 +5944,25 @@
           attempt.doubtFlags = Array(exam.questionCount).fill(false);
         }
 
-        attempt.doubtFlags[currentQuestionIndex] =
-          !attempt.doubtFlags[currentQuestionIndex];
+        attempt.doubtFlags[qIndex] = !attempt.doubtFlags[qIndex];
 
         saveData();
 
-        renderQuestion();
+        const slide = document.querySelector(
+          `.question-slide[data-index="${qIndex}"]`,
+        );
+
+        if (slide) {
+          const btn = slide.querySelector(".doubt-toggle");
+
+          if (btn) {
+            btn.classList.toggle("active", attempt.doubtFlags[qIndex] === true);
+          }
+        }
+
+        renderQuestionDots();
       }
+
 
       /* =====================================================
         FINISH
@@ -5283,7 +6373,8 @@
                           پاسخ صحیح:
                           <strong>${optionText(q.correctAnswer)}</strong>
                         </span>
-                        <button class="btn btn-edit" style="padding:6px 10px;font-size:11px" onclick="editCorrectAnswerFromResult('${exam.id}', ${q.index}, ${selectedAttemptIndex})">✏️ ویرایش پاسخ صحیح</button>
+                        <button class="btn btn-edit" style="padding:6px 10px;font-size:11px" onclick="editCorrectAnswerFromResult('${exam.id}', ${q.index}, ${selectedAttemptIndex})">✏️ ویرایش پاسخ صحیح</button> 
+                        <button class="btn btn-secondary" style="padding:6px 10px;font-size:11px" onclick="editUserAnswerFromResult('${exam.id}', ${q.index}, ${selectedAttemptIndex})">✏️ ویرایش پاسخ من</button>
 
                       </div>
 
@@ -5701,32 +6792,19 @@
 
       function setTheme(theme) {
         applyTheme(theme);
+
+        closeThemeMenu();
       }
 
       function toggleThemeMenu() {
-        document.getElementById("themeMenu")?.classList.toggle("active");
+        document.getElementById("themeMenu").classList.toggle("active");
       }
 
       function closeThemeMenu() {
-        document.getElementById("themeMenu")?.classList.remove("active");
-      }
-
-      /* ===== منوی همبرگری هدر ===== */
-      function toggleMainMenu() {
-        document.getElementById("mainMenu")?.classList.toggle("active");
-      }
-
-      function closeMainMenu() {
-        document.getElementById("mainMenu")?.classList.remove("active");
+        document.getElementById("themeMenu").classList.remove("active");
       }
 
       document.addEventListener("click", function (event) {
-        const hamburgerWrap = document.querySelector(".hamburger-wrap");
-
-        if (hamburgerWrap && !hamburgerWrap.contains(event.target)) {
-          closeMainMenu();
-        }
-
         const selector = document.querySelector(".theme-selector");
 
         if (!selector) return;
@@ -6345,6 +7423,94 @@
         showResult(examId, "all", attemptIndex);
       }
 
+      /* ویرایش پاسخ ثبت‌شده کاربر از صفحه نتیجه با انتخاب گزینه */
+      let editingUserAnswerData = null;
+
+      function editUserAnswerFromResult(
+        examId,
+        questionIndex,
+        attemptIndex,
+      ) {
+        const exam = exams.find((e) => e.id === examId);
+        if (!exam) return;
+
+        const attempt = Array.isArray(exam.attempts)
+          ? exam.attempts[attemptIndex]
+          : null;
+        if (!attempt) return;
+
+        if (!Array.isArray(attempt.answers)) {
+          attempt.answers = Array(exam.questionCount || 0).fill(null);
+        }
+
+        editingUserAnswerData = { examId, questionIndex, attemptIndex };
+
+        const current = attempt.answers[questionIndex];
+        const select = document.getElementById("userAnswerSelect");
+
+        document.getElementById("userAnswerQuestionLabel").textContent =
+          `پاسخ شما برای سؤال ${questionIndex + 1} را انتخاب کنید`;
+
+        select.value =
+          current === null || current === undefined ? "" : String(current);
+
+        document
+          .getElementById("userAnswerEditModal")
+          .classList.add("active");
+      }
+
+      function closeUserAnswerEditModal() {
+        document
+          .getElementById("userAnswerEditModal")
+          .classList.remove("active");
+        editingUserAnswerData = null;
+      }
+
+      function saveUserAnswerFromResult() {
+        if (!editingUserAnswerData) return;
+
+        const { examId, questionIndex, attemptIndex } =
+          editingUserAnswerData;
+
+        const exam = exams.find((e) => e.id === examId);
+        if (!exam) {
+          closeUserAnswerEditModal();
+          return;
+        }
+
+        const attempt = Array.isArray(exam.attempts)
+          ? exam.attempts[attemptIndex]
+          : null;
+
+        if (!attempt) {
+          closeUserAnswerEditModal();
+          return;
+        }
+
+        if (!Array.isArray(attempt.answers)) {
+          attempt.answers = Array(exam.questionCount || 0).fill(null);
+        }
+
+        const raw = document.getElementById("userAnswerSelect").value;
+        const value = raw === "" ? null : Number(raw);
+
+        if (
+          value !== null &&
+          (!Number.isInteger(value) || value < 0 || value > 3)
+        ) {
+          alert("گزینه انتخاب‌شده معتبر نیست.");
+          return;
+        }
+
+        attempt.answers[questionIndex] = value;
+
+        saveData();
+        closeUserAnswerEditModal();
+
+        // نتیجه همان تلاش دوباره محاسبه و نمایش داده می‌شود.
+        showResult(examId, "all", attemptIndex);
+      }
+
       /* تغییر عنوان دکمه و تکمیل انتخاب درس هنگام ایجاد آزمون */
       document.addEventListener("DOMContentLoaded", () => {
         /* همه توابع مربوط به دروس اکنون تعریف شده‌اند؛ حالا اولین رندر امن است. */
@@ -6400,36 +7566,37 @@
       }
 
       /* اگر کاربر بعد از توقف تایمر، پاسخ بدهد، هر دو تایمر دوباره شروع می‌شوند. */
-      function selectOption(optionIndex) {
+      function selectOption(qIndex, optionIndex) {
         const exam = exams.find((e) => e.id === currentExamId);
         if (!exam) return;
 
         if (currentMode === "exam") {
           if (currentAttemptIndex === -1) return;
 
-          const timing = getCurrentTiming();
-          if (timing && (!timing.totalRunning || !timing.questionRunning)) {
-            startExamTimer();
+          if (qIndex === currentQuestionIndex) {
+            const timing = getCurrentTiming();
+            if (timing && (!timing.totalRunning || !timing.questionRunning)) {
+              startExamTimer();
+            }
           }
 
           const attempt = exam.attempts[currentAttemptIndex];
           if (!attempt) return;
-          attempt.answers[currentQuestionIndex] = optionIndex;
+          attempt.answers[qIndex] = optionIndex;
         } else {
-          exam.correctAnswers[currentQuestionIndex] = optionIndex;
+          if (!Array.isArray(exam.correctAnswers)) return;
+          exam.correctAnswers[qIndex] = optionIndex;
         }
 
         saveData();
 
-        if (currentQuestionIndex < exam.questionCount - 1) {
+        updateSlideAnswerUI(qIndex, optionIndex);
+        renderQuestionDots();
+
+        if (qIndex === currentQuestionIndex && qIndex < exam.questionCount - 1) {
           setTimeout(() => {
-            const nextIndex = currentQuestionIndex + 1;
-            prepareQuestionTimerForQuestionChange(nextIndex);
-            currentQuestionIndex = nextIndex;
-            renderQuestion();
+            goToQuestion(qIndex + 1);
           }, 120);
-        } else {
-          renderQuestion();
         }
       }
 
@@ -6687,10 +7854,11 @@
       });
     </script>
 
-    <!-- ============ اتصال به Firebase: احراز هویت + دیتابیس ابری ============ -->
+    <!-- ============================================================
+         AUTH: ورود با گوگل + ورود مهمان + همگام‌سازی ابری (Firestore)
+    ============================================================ -->
     <script>
-      /* 1) این مقادیر را از Firebase Console پروژه‌ی خودت کپی کن
-         (Project settings → Your apps → SDK setup and configuration) */
+      /* پیکربندی همان پروژه‌ی Firebase که در کنسول ساخته شده است. */
       const firebaseConfig = {
         apiKey: "AIzaSyBoM9fKpxG-ZBy7MQEzE6NsDlb-Eh0D28E",
         authDomain: "exam-2bfe7.firebaseapp.com",
@@ -6699,103 +7867,75 @@
         messagingSenderId: "877374727122",
         appId: "1:877374727122:web:83808ac66606227baa5e0b",
       };
-
       firebase.initializeApp(firebaseConfig);
       const fbAuth = firebase.auth();
       const fbDb = firebase.firestore();
 
+      const GUEST_MODE_KEY = "exam_manager_guest_mode";
+      const CLOUD_SYNCED_FLAG = "examManagerCloudSyncedOnce";
+
       const authOverlay = document.getElementById("authOverlay");
-      const authEmailInput = document.getElementById("authEmail");
-      const authPasswordInput = document.getElementById("authPassword");
-      const authErrorBox = document.getElementById("authError");
       const authLoadingBox = document.getElementById("authLoading");
+      const authErrorBox = document.getElementById("authError");
+      const authGoogleBtn = document.getElementById("authGoogleBtn");
+      const authGuestBtn = document.getElementById("authGuestBtn");
+      const migrateModal = document.getElementById("migrateModal");
+      const migrateUseLocalBtn = document.getElementById("migrateUseLocalBtn");
+      const migrateUseCloudBtn = document.getElementById("migrateUseCloudBtn");
 
-      function showAuthError(message) {
-        authErrorBox.textContent = message;
-        authErrorBox.style.display = message ? "block" : "none";
+      function showAuthOverlay() {
+        authOverlay.classList.add("active");
       }
-
+      function hideAuthOverlay() {
+        authOverlay.classList.remove("active");
+      }
+      function showAuthLoading(on) {
+        authLoadingBox.style.display = on ? "block" : "none";
+      }
+      function showAuthError(msg) {
+        authErrorBox.textContent = msg;
+        authErrorBox.style.display = msg ? "block" : "none";
+      }
       function translateAuthError(code) {
         const map = {
-          "auth/invalid-email": "ایمیل معتبر نیست.",
-          "auth/user-not-found": "کاربری با این ایمیل پیدا نشد.",
-          "auth/wrong-password": "رمز عبور اشتباه است.",
-          "auth/invalid-credential": "ایمیل یا رمز عبور اشتباه است.",
-          "auth/email-already-in-use": "این ایمیل قبلاً ثبت‌نام کرده است.",
-          "auth/weak-password": "رمز عبور باید حداقل ۶ کاراکتر باشد.",
           "auth/popup-closed-by-user": "پنجره‌ی ورود با گوگل بسته شد.",
           "auth/cancelled-popup-request": "پنجره‌ی ورود با گوگل بسته شد.",
-          "auth/popup-blocked": "مرورگر پنجره‌ی ورود با گوگل را مسدود کرد؛ اجازه‌ی نمایش پاپ‌آپ را بده.",
+          "auth/popup-blocked":
+            "مرورگر پنجره‌ی ورود با گوگل را مسدود کرد؛ اجازه‌ی نمایش پاپ‌آپ را بده.",
+          "auth/network-request-failed": "اتصال اینترنت برقرار نیست.",
         };
-        return map[code] || "خطایی رخ داد، دوباره تلاش کن.";
+        return map[code] || "ورود با گوگل انجام نشد، دوباره تلاش کن.";
       }
 
-      document.getElementById("authGoogleBtn").addEventListener("click", () => {
-        showAuthError("");
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        fbAuth
-          .signInWithPopup(googleProvider)
-          .catch((err) => showAuthError(translateAuthError(err.code)));
-      });
+      /* ---- حالت مهمان ---- */
+      function isGuestMode() {
+        return localStorage.getItem(GUEST_MODE_KEY) === "1";
+      }
+      function setGuestMode(on) {
+        if (on) localStorage.setItem(GUEST_MODE_KEY, "1");
+        else localStorage.removeItem(GUEST_MODE_KEY);
+      }
 
-      authLoginBtn.addEventListener("click", () => {
-        showAuthError("");
-        const email = authEmailInput.value.trim();
-        const password = authPasswordInput.value;
-        if (!email || !password) {
-          showAuthError("ایمیل و رمز عبور را وارد کن.");
-          return;
-        }
-        fbAuth
-          .signInWithEmailAndPassword(email, password)
-          .catch((err) => showAuthError(translateAuthError(err.code)));
-      });
+      /* اگر از قبل به‌عنوان مهمان وارد شده، بلافاصله (بدون معطلی برای پاسخ
+         فایربیس) صفحه‌ی ورود را کنار بزن تا کاربر معطل نماند. */
+      if (isGuestMode()) hideAuthOverlay();
 
-      authRegisterBtn.addEventListener("click", () => {
-        showAuthError("");
-        const email = authEmailInput.value.trim();
-        const password = authPasswordInput.value;
-        if (!email || !password) {
-          showAuthError("ایمیل و رمز عبور را وارد کن.");
-          return;
-        }
-        fbAuth
-          .createUserWithEmailAndPassword(email, password)
-          .catch((err) => showAuthError(translateAuthError(err.code)));
-      });
-
-      function updateMenuUserInfo(user) {
-        const info = document.getElementById("menuUserInfo");
-        const photo = document.getElementById("menuUserPhoto");
-        const nameEl = document.getElementById("menuUserName");
-        const emailEl = document.getElementById("menuUserEmail");
-        const logoutBtn = document.getElementById("menuLogoutBtn");
-
-        if (!user) {
-          if (info) info.style.display = "none";
-          if (logoutBtn) logoutBtn.style.display = "none";
-          return;
-        }
-
-        if (info) info.style.display = "flex";
-        if (photo) {
-          photo.src =
-            user.photoURL ||
-            "data:image/svg+xml;utf8," +
-              encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="20" fill="%235b5ce2"/><text x="50%" y="55%" font-size="18" fill="white" text-anchor="middle">' +
-                  (user.email ? user.email[0].toUpperCase() : "؟") +
-                  "</text></svg>",
-              );
-        }
-        if (nameEl) nameEl.textContent = user.displayName || "";
-        if (emailEl) emailEl.textContent = user.email || "";
-        if (logoutBtn) {
-          logoutBtn.style.display = "flex";
-          logoutBtn.onclick = () => {
-            closeMainMenu();
-            fbAuth.signOut();
-          };
+      function hasMeaningfulLocalData() {
+        try {
+          const e = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          const q = JSON.parse(
+            localStorage.getItem(QUESTION_BANK_KEY) || "[]",
+          );
+          const s = JSON.parse(
+            localStorage.getItem(SUBJECTS_KEY_V3) || "[]",
+          );
+          return (
+            (Array.isArray(e) && e.length > 0) ||
+            (Array.isArray(q) && q.length > 0) ||
+            (Array.isArray(s) && s.length > 0)
+          );
+        } catch {
+          return false;
         }
       }
 
@@ -6809,7 +7949,6 @@
           updatedAt: Date.now(),
         };
       }
-
       function writeLocalSnapshot(data) {
         localStorage.setItem(STORAGE_KEY, data.exams ?? "[]");
         localStorage.setItem(QUESTION_BANK_KEY, data.questionBank ?? "[]");
@@ -6819,7 +7958,6 @@
 
       let cloudDocRef = null;
       let isPushingToCloud = false;
-
       function pushToCloud() {
         if (!cloudDocRef || isPushingToCloud) return;
         isPushingToCloud = true;
@@ -6831,87 +7969,208 @@
           });
       }
 
-      /* ---- هر جا داده به‌صورت محلی ذخیره می‌شود، نسخه‌ی ابری هم به‌روزرسانی می‌شود ---- */
+      /* هر جا داده به‌صورت محلی ذخیره می‌شود، اگر کاربر با گوگل وارد شده
+         باشد نسخه‌ی ابری هم به‌روزرسانی می‌شود (برای مهمان‌ها cloudDocRef
+         خالی است و pushToCloud کاری انجام نمی‌دهد). */
       const _origSaveData = saveData;
       saveData = function () {
         _origSaveData.apply(this, arguments);
         pushToCloud();
       };
-
       const _origSaveQuestionBankV2 = saveQuestionBankV2;
       saveQuestionBankV2 = function () {
         _origSaveQuestionBankV2.apply(this, arguments);
         pushToCloud();
       };
-
       const _origSaveSubjectsV3 = saveSubjectsV3;
       saveSubjectsV3 = function () {
         _origSaveSubjectsV3.apply(this, arguments);
         pushToCloud();
       };
-
       const _origApplyTheme = applyTheme;
       applyTheme = function () {
         _origApplyTheme.apply(this, arguments);
         pushToCloud();
       };
 
-      /* ---- نمایش نام و عکس پروفایل کاربر در هدر ---- */
-      const DEFAULT_LOGO_SRC = "icon.jpg";
-      const DEFAULT_HEADER_SUBTITLE = "ثبت، انجام و سنجش آزمون";
+      /* ---- دکمه‌های صفحه‌ی ورود ---- */
+      authGuestBtn.addEventListener("click", () => {
+        setGuestMode(true);
+        hideAuthOverlay();
+        updateAccountUI(null);
+      });
+      authGoogleBtn.addEventListener("click", () => requestGoogleSignIn());
 
-      function applyHeaderProfile(user) {
-        const subtitleEl = document.getElementById("headerSubtitle");
-        if (subtitleEl) {
-          subtitleEl.textContent =
-            user.displayName || user.email || DEFAULT_HEADER_SUBTITLE;
-        }
-        const logoImg = document.getElementById("logoIcon");
-        if (logoImg) {
-          logoImg.src = user.photoURL || DEFAULT_LOGO_SRC;
+      async function requestGoogleSignIn() {
+        showAuthError("");
+        closeAccountMenu();
+        try {
+          /* داخل اپ اندرویدی (Capacitor)، signInWithPopup کار نمی‌کند؛
+             در آن حالت از افزونه‌ی ورود بومی گوگل (native-auth-bridge.js)
+             استفاده می‌شود. در مرورگر معمولی همان روش پاپ‌آپ اجرا می‌شود. */
+          if (
+            window.Capacitor &&
+            window.Capacitor.isNativePlatform &&
+            window.Capacitor.isNativePlatform() &&
+            window.NativeGoogleAuth
+          ) {
+            const result = await window.NativeGoogleAuth.signIn();
+            const idToken = result && result.credential && result.credential.idToken;
+            if (!idToken) throw new Error("توکن گوگل دریافت نشد.");
+            const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
+            await fbAuth.signInWithCredential(credential);
+          } else {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            await fbAuth.signInWithPopup(provider);
+          }
+        } catch (err) {
+          const msg =
+            err && err.code
+              ? translateAuthError(err.code)
+              : (err && err.message) || "ورود با گوگل انجام نشد.";
+          showAuthError(msg);
         }
       }
 
-      function resetHeaderProfile() {
-        const subtitleEl = document.getElementById("headerSubtitle");
-        if (subtitleEl) subtitleEl.textContent = DEFAULT_HEADER_SUBTITLE;
-        const logoImg = document.getElementById("logoIcon");
-        if (logoImg) logoImg.src = DEFAULT_LOGO_SRC;
+      function signOutAccount() {
+        closeAccountMenu();
+        setGuestMode(false);
+        sessionStorage.removeItem(CLOUD_SYNCED_FLAG);
+        fbAuth.signOut();
       }
 
-      /* ---- وضعیت ورود کاربر ---- */
+      /* ---- منوی حساب کاربری در هدر ---- */
+      function toggleAccountMenu() {
+        document.getElementById("accountMenu").classList.toggle("active");
+      }
+      function closeAccountMenu() {
+        document.getElementById("accountMenu").classList.remove("active");
+      }
+      document.addEventListener("click", (e) => {
+        const sel = document.querySelector(".account-selector");
+        if (sel && !sel.contains(e.target)) closeAccountMenu();
+      });
+
+      function updateAccountUI(user) {
+        const label = document.getElementById("accountChipLabel");
+        const avatar = document.getElementById("accountChipAvatar");
+        const fallback = document.getElementById("accountChipFallback");
+        const menuName = document.getElementById("accountMenuName");
+        const menuEmail = document.getElementById("accountMenuEmail");
+        const googleBtn = document.getElementById("accountMenuGoogleBtn");
+        const logoutBtn = document.getElementById("accountMenuLogoutBtn");
+
+        if (user) {
+          label.textContent = user.displayName
+            ? user.displayName.split(" ")[0]
+            : "حساب گوگل";
+          menuName.textContent = user.displayName || "کاربر گوگل";
+          menuEmail.textContent = user.email || "";
+          if (user.photoURL) {
+            avatar.src = user.photoURL;
+            avatar.style.display = "block";
+            fallback.style.display = "none";
+          } else {
+            avatar.style.display = "none";
+            fallback.style.display = "flex";
+            fallback.textContent = (user.email || "گ")[0].toUpperCase();
+          }
+          googleBtn.style.display = "none";
+          logoutBtn.style.display = "block";
+        } else {
+          label.textContent = "مهمان";
+          menuName.textContent = "مهمان";
+          menuEmail.textContent = "اطلاعات فقط روی این گوشی ذخیره می‌شود";
+          avatar.style.display = "none";
+          fallback.style.display = "flex";
+          fallback.textContent = "👤";
+          googleBtn.style.display = "block";
+          logoutBtn.style.display = "none";
+        }
+      }
+
+      /* ---- مودال انتقال داده هنگام ورود مهمان با گوگل ---- */
+      let pendingCloudDataForMigration = null;
+      function showMigrateModal(cloudData) {
+        pendingCloudDataForMigration = cloudData;
+        migrateModal.classList.add("active");
+      }
+      function hideMigrateModal() {
+        migrateModal.classList.remove("active");
+        pendingCloudDataForMigration = null;
+      }
+      migrateUseLocalBtn.addEventListener("click", () => {
+        /* اطلاعات همین گوشی (که همین الان هم در localStorage است) به
+           حساب گوگل فرستاده می‌شود؛ نیازی به تغییر داده‌ی محلی نیست. */
+        hideMigrateModal();
+        pushToCloud();
+        finishLoginSync();
+      });
+      migrateUseCloudBtn.addEventListener("click", () => {
+        if (pendingCloudDataForMigration) {
+          writeLocalSnapshot(pendingCloudDataForMigration);
+        }
+        hideMigrateModal();
+        finishLoginSync();
+      });
+      function finishLoginSync() {
+        setGuestMode(false);
+        sessionStorage.setItem(CLOUD_SYNCED_FLAG, "1");
+        location.reload();
+      }
+
+      /* ---- ناظر وضعیت ورود ---- */
       fbAuth.onAuthStateChanged(async (user) => {
         if (!user) {
-          sessionStorage.removeItem("cloudSyncedOnce");
-          authLoadingBox.style.display = "none";
-          authOverlay.style.display = "flex";
-          updateMenuUserInfo(null);
-          resetHeaderProfile();
+          cloudDocRef = null;
+          showAuthLoading(false);
+          updateAccountUI(null);
+          if (isGuestMode()) {
+            hideAuthOverlay();
+          } else {
+            showAuthOverlay();
+          }
           return;
         }
 
         cloudDocRef = fbDb.collection("examManagerUsers").doc(user.uid);
-        updateMenuUserInfo(user);
-        applyHeaderProfile(user);
+        updateAccountUI(user);
 
-        if (!sessionStorage.getItem("cloudSyncedOnce")) {
-          authLoadingBox.style.display = "block";
-          try {
-            const snap = await cloudDocRef.get();
-            if (snap.exists) {
-              writeLocalSnapshot(snap.data());
-            } else {
-              await cloudDocRef.set(readLocalSnapshot());
-            }
-          } catch (err) {
-            console.error("خطا در دریافت اطلاعات ابری:", err);
-          }
-          sessionStorage.setItem("cloudSyncedOnce", "1");
-          location.reload();
+        if (sessionStorage.getItem(CLOUD_SYNCED_FLAG)) {
+          /* این نشست قبلاً همگام شده؛ فقط رابط کاربری باز شود. */
+          hideAuthOverlay();
           return;
         }
 
-        authOverlay.style.display = "none";
+        showAuthError("");
+        showAuthLoading(true);
+        try {
+          const wasGuestWithData = isGuestMode() && hasMeaningfulLocalData();
+          const snap = await cloudDocRef.get();
+          const cloudData = snap.exists ? snap.data() : null;
+
+          if (wasGuestWithData) {
+            /* هم روی گوشی داده‌ی مهمان هست، هم در حساب گوگل—از کاربر بپرس. */
+            showAuthLoading(false);
+            showMigrateModal(cloudData);
+            return;
+          }
+
+          if (cloudData) {
+            writeLocalSnapshot(cloudData);
+          } else {
+            await cloudDocRef.set(readLocalSnapshot());
+          }
+          finishLoginSync();
+        } catch (err) {
+          console.error("خطا در دریافت اطلاعات ابری:", err);
+          showAuthLoading(false);
+          showAuthError(
+            "اتصال به دیتابیس ابری برقرار نشد. اتصال اینترنت را بررسی کن.",
+          );
+          /* برای اینکه کاربر گیر نکند، فعلاً با نسخه‌ی محلی ادامه بده. */
+          hideAuthOverlay();
+        }
       });
     </script>
   </body>
