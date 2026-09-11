@@ -1775,8 +1775,18 @@
           padding: 10px 11px;
           font-size: 11px;
         }
-        .theme-button,
-        .btn-timer-show {
+        /* در موبایل اکشن‌ها از هدر جدا می‌شوند و داخل منوی شناور حساب قرار می‌گیرند. */
+        .new-exam-thme > .btn-primary,
+        .new-exam-thme > .btn-secondary,
+        .new-exam-thme > .btn-timer-show {
+          display: none;
+        }
+
+        .mobile-account-actions {
+          display: block;
+        }
+
+        .theme-button {
           width: 39px;
           height: 39px;
           flex-shrink: 0;
@@ -2489,6 +2499,51 @@
         position: relative;
       }
 
+      /* ---- اکشن‌های سریع داخل منوی شناور حساب در موبایل ---- */
+      .mobile-account-actions {
+        display: none;
+        margin: 7px 0;
+        padding: 7px 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .mobile-account-actions button,
+      .mobile-account-action-link {
+        width: 100%;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-align: right;
+        background: transparent;
+        border: 0;
+        border-radius: 10px;
+        padding: 9px 10px;
+        color: var(--text-strong);
+        text-decoration: none;
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .mobile-account-actions button:hover,
+      .mobile-account-action-link:hover {
+        background: var(--option-hover);
+      }
+
+      .mobile-account-actions span,
+      .mobile-account-action-link span {
+        flex: 1;
+      }
+
+      /* در موبایل اکشن‌های سریع باید بعد از استایل عمومی منو نیز فعال بمانند. */
+      @media (max-width: 600px) {
+        .mobile-account-actions {
+          display: block !important;
+        }
+      }
+
       /* ---- مودال انتقال داده هنگام ورود با گوگل ---- */
       .migrate-modal .modal-box {
         max-width: 420px;
@@ -2632,6 +2687,20 @@
                 >
                   🔐 ورود با گوگل
                 </button>
+
+                <!-- اکشن‌های هدر در موبایل داخل منوی شناور حساب -->
+                <div class="mobile-account-actions">
+                  <button type="button" onclick="openNewExamModal(); closeAccountMenu();">
+                    📑 <span>آزمون جدید</span>
+                  </button>
+                  <button type="button" onclick="openSubjectModal(); closeAccountMenu();">
+                    📗 <span>درس جدید</span>
+                  </button>
+                  <a href="timer.html" class="mobile-account-action-link">
+                    ⏰ <span>تایمر</span>
+                  </a>
+                </div>
+
                 <button
                   type="button"
                   id="accountMenuLogoutBtn"
@@ -8075,7 +8144,10 @@
             fallback.style.display = "flex";
             fallback.textContent = (user.email || "گ")[0].toUpperCase();
           }
-          googleBtn.style.display = "none";
+          /* ورود با گوگل همیشه در منوی حساب باقی می‌ماند؛
+             کاربر لاگین‌شده هم می‌تواند از همین‌جا حساب گوگل را تغییر دهد. */
+          googleBtn.style.display = "block";
+          googleBtn.textContent = "🔐 ورود با گوگل";
           logoutBtn.style.display = "block";
         } else {
           label.textContent = "مهمان";
